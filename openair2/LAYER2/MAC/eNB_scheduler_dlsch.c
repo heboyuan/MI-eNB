@@ -580,6 +580,15 @@ schedule_ue_spec(module_id_t module_idP,
     eNB_stats->total_available_prbs += total_nb_available_rb[CC_id];
     eNB_stats->dlsch_bytes_tx = 0;
     eNB_stats->dlsch_pdus_tx = 0;
+    LOG_D(MAC, "[eNB %d] Frame %d Subframe %d: CC_id %d Available RB %d Active UE %d Bandwidth %ld\n",
+        module_idP,
+        frameP,
+	subframeP,
+        CC_id,
+        eNB_stats->available_prbs,
+	eNB_stats->num_dlactive_UEs,
+	dl_Bandwidth);
+
   }
 
   // CALLING Pre_Processor for downlink scheduling
@@ -2657,6 +2666,17 @@ fill_DLSCH_dci(module_id_t module_idP,
                 N_RBG,
                 rballoc_sub);
             dl_config_pdu->dci_dl_pdu.dci_dl_pdu_rel8.resource_allocation_type = 0;
+
+LOG_E(MAC, "DCI Frame %d, SubFrame%d, CC_id %d, UE_id: %d, number of rb %d, coding: %d\n",
+            frameP,
+            subframeP,
+            CC_id,
+            UE_id,
+            nb_rb,
+            dl_config_pdu->dci_dl_pdu.dci_dl_pdu_rel8.resource_block_coding
+            );
+
+
           } else if (dl_config_pdu->pdu_type == NFAPI_DL_CONFIG_DLSCH_PDU_TYPE &&
                      dl_config_pdu->dlsch_pdu.dlsch_pdu_rel8.rnti == rnti &&
                      dl_config_pdu->dlsch_pdu.dlsch_pdu_rel8.resource_allocation_type == 0) {
@@ -2664,7 +2684,21 @@ fill_DLSCH_dci(module_id_t module_idP,
                 N_RB_DL,
                 N_RBG,
                 rballoc_sub);
+
+LOG_E(MAC, "DLSCH Frame %d, SubFrame%d, CC_id %d, UE_id: %d, number of rb %d, coding: %d\n",
+            frameP,
+            subframeP,
+            CC_id,
+            UE_id,
+            nb_rb,
+            dl_config_pdu->dlsch_pdu.dlsch_pdu_rel8.resource_block_coding
+            );
+
+
           }
+
+
+
         }
       }
     }

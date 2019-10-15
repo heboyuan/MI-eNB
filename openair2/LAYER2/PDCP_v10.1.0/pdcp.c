@@ -929,6 +929,8 @@ pdcp_data_ind(
    * from its second byte (skipping 0th and 1st octets, i.e.
    * PDCP header)
    */
+  LOG_E(PDCP, "frame: %d, subframe: %d, sequence number: %d, size: %d\n",
+    ctxt_pP->frame, ctxt_pP->subframe, sequence_number, sdu_buffer_sizeP - payload_offset);
 
   if (LINK_ENB_PDCP_TO_GTPV1U) {
     if ((TRUE == ctxt_pP->enb_flag) && (FALSE == srb_flagP)) {
