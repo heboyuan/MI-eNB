@@ -2826,7 +2826,9 @@ do_RRCConnectionSetup(
   logicalchannelgroup = CALLOC(1,sizeof(long));
   *logicalchannelgroup=0;
   SRB1_ul_SpecificParameters->logicalChannelGroup = logicalchannelgroup;
+  //Zhehui
   ASN_SEQUENCE_ADD(&(*SRB_configList)->list,SRB1_config);
+  //free(*SRB_configList);
   // PhysicalConfigDedicated
   physicalConfigDedicated2 = CALLOC(1,sizeof(*physicalConfigDedicated2));
   *physicalConfigDedicated = physicalConfigDedicated2;
@@ -3088,7 +3090,9 @@ do_RRCConnectionSetup(
   rrcConnectionSetup->rrc_TransactionIdentifier = Transaction_id;
   rrcConnectionSetup->criticalExtensions.present = LTE_RRCConnectionSetup__criticalExtensions_PR_c1;
   rrcConnectionSetup->criticalExtensions.choice.c1.present = LTE_RRCConnectionSetup__criticalExtensions__c1_PR_rrcConnectionSetup_r8 ;
-  rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = *SRB_configList;
+//Zhehui
+  //rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = *SRB_configList;
+  rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.drb_ToAddModList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.drb_ToReleaseList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.sps_Config = NULL;
@@ -3242,8 +3246,9 @@ uint8_t do_RRCConnectionSetup_BR(
   SRB1_ul_SpecificParameters->logicalChannelGroup = logicalchannelgroup;
 
 //Zhehui
-  //ASN_SEQUENCE_ADD(&(*SRB_configList)->list,SRB1_config);
-  SRB1_config = NULL;
+  ASN_SEQUENCE_ADD(&(*SRB_configList)->list,SRB1_config);
+  //SRB1_config = NULL;
+  //LOG_I(RRC,"Edited");
   // PhysicalConfigDedicated
 
   physicalConfigDedicated2 = CALLOC(1,sizeof(*physicalConfigDedicated2));
