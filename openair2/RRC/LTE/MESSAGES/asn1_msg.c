@@ -871,6 +871,8 @@ uint8_t do_SIB1(rrc_eNB_carrier_data_t *carrier,
   //  assign_enum(&(*sib1)->cellAccessRelatedInfo.intraFreqReselection,SystemInformationBlockType1__cellAccessRelatedInfo__intraFreqReselection_allowed);
   (*sib1)->cellAccessRelatedInfo.intraFreqReselection=LTE_SystemInformationBlockType1__cellAccessRelatedInfo__intraFreqReselection_notAllowed;
   (*sib1)->cellAccessRelatedInfo.csg_Indication=0;
+//Zhehui
+//  (*sib1)->cellSelectionInfo.q_RxLevMin=-65;
   (*sib1)->cellSelectionInfo.q_RxLevMin=-65;
   (*sib1)->cellSelectionInfo.q_RxLevMinOffset=NULL;
   //(*sib1)->p_Max = CALLOC(1, sizeof(P_Max_t));
@@ -889,7 +891,9 @@ uint8_t do_SIB1(rrc_eNB_carrier_data_t *carrier,
   //  ASN_SEQUENCE_ADD(&schedulingInfo.sib_MappingInfo.list,NULL);
 #if defined(ENABLE_ITTI)
 
+  //Zhehui
   if (configuration->frame_type[CC_id] == TDD)
+  //if (true)
 #endif
   {
     (*sib1)->tdd_Config =                             CALLOC(1,sizeof(struct LTE_TDD_Config));
@@ -3237,9 +3241,9 @@ uint8_t do_RRCConnectionSetup_BR(
   *logicalchannelgroup=0;
   SRB1_ul_SpecificParameters->logicalChannelGroup = logicalchannelgroup;
 
-
-  ASN_SEQUENCE_ADD(&(*SRB_configList)->list,SRB1_config);
-
+//Zhehui
+  //ASN_SEQUENCE_ADD(&(*SRB_configList)->list,SRB1_config);
+  SRB1_config = NULL;
   // PhysicalConfigDedicated
 
   physicalConfigDedicated2 = CALLOC(1,sizeof(*physicalConfigDedicated2));
