@@ -103,6 +103,11 @@
   #define msg printf
 #endif
 
+// #if !defined (XER_PRINT)
+// #define XER_PRINT
+// #endif
+
+
 
 typedef struct xer_sprint_string_s {
   char *string;
@@ -3091,8 +3096,8 @@ do_RRCConnectionSetup(
   rrcConnectionSetup->criticalExtensions.present = LTE_RRCConnectionSetup__criticalExtensions_PR_c1;
   rrcConnectionSetup->criticalExtensions.choice.c1.present = LTE_RRCConnectionSetup__criticalExtensions__c1_PR_rrcConnectionSetup_r8 ;
 //Zhehui
-  //rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = *SRB_configList;
-  rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = NULL;
+  rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = *SRB_configList;
+  //rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.drb_ToAddModList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.drb_ToReleaseList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.sps_Config = NULL;
@@ -3555,7 +3560,7 @@ uint8_t do_RRCConnectionSetup_BR(
   // rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.mac_MainConfig = NULL;
 
 #ifdef XER_PRINT
-  xer_fprint(stdout, &asn_DEF_DL_CCCH_Message, (void*)&dl_ccch_msg);
+  xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void*)&dl_ccch_msg);
 #endif
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
 				   NULL,
@@ -3832,7 +3837,7 @@ uint16_t do_RRCConnectionReconfiguration_BR(const protocol_ctxt_t*        const 
 	       enc_rval.failed_type->name, enc_rval.encoded);
 
 #ifdef XER_PRINT
-  xer_fprint(stdout,&asn_DEF_DL_DCCH_Message,(void*)&dl_dcch_msg);
+  xer_fprint(stdout,&asn_DEF_LTE_DL_DCCH_Message,(void*)&dl_dcch_msg);
 #endif
 
 #if defined(ENABLE_ITTI)
