@@ -1327,6 +1327,8 @@ rrc_eNB_generate_SecurityModeCommand(
            rrc_eNB_get_next_transaction_identifier(ctxt_pP->module_id),
            ue_context_pP->ue_context.ciphering_algorithm,
            ue_context_pP->ue_context.integrity_algorithm);
+  //Zhehui
+  LOG_E(RRC, "MI: RRC SecurityModeCommand for UE %x\n", ctxt_pP->rnti);
   LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)buffer,size,"[MSG] RRC Security Mode Command\n");
   LOG_I(RRC,
         PROTOCOL_RRC_CTXT_UE_FMT" Logical Channel DL-DCCH, Generate SecurityModeCommand (bytes %d)\n",
@@ -1378,6 +1380,11 @@ rrc_eNB_generate_UECapabilityEnquiry(
            ctxt_pP,
            buffer,
            rrc_eNB_get_next_transaction_identifier(ctxt_pP->module_id));
+  //Zhehui
+//Zhehui
+          LOG_E(RRC, "MI: RRC UECapabilityEnquiry for UE %x\n", ctxt_pP->rnti);
+
+
   LOG_I(RRC,
         PROTOCOL_RRC_CTXT_UE_FMT" Logical Channel DL-DCCH, Generate UECapabilityEnquiry (bytes %d)\n",
         PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
@@ -2127,6 +2134,8 @@ rrc_eNB_process_RRCConnectionReestablishmentComplete(
       ue_context_pP->ue_context.e_rab[i].param.nas_pdu.buffer = NULL;
     }
   }
+  //Zhehui
+  LOG_E(RRC,"MI: RRCConnectionReconfiguration for UE %x\n", ctxt_pP->rnti);
 
   if(size==65535) {
     LOG_E(RRC,"RRC decode err!!! do_RRCConnectionReconfiguration\n");
@@ -2371,6 +2380,9 @@ rrc_eNB_generate_dedicatedRRCConnectionReconfiguration(const protocol_ctxt_t *co
   //  int drb_identity_index=0;
   uint8_t xid = rrc_eNB_get_next_transaction_identifier(ctxt_pP->module_id);   //Transaction_id,
   DRB_configList2=&ue_context_pP->ue_context.DRB_configList2[xid];
+//Zhehui
+          LOG_E(RRC, "MI: RRCConnectionReconfiguration for UE %x\n", ctxt_pP->rnti);
+
 
   if (*DRB_configList2) {
     free(*DRB_configList2);
@@ -3053,6 +3065,9 @@ void rrc_eNB_generate_defaultRRCConnectionReconfiguration(const protocol_ctxt_t 
     T_INT(ctxt_pP->frame),
     T_INT(ctxt_pP->subframe), 
     T_INT(ctxt_pP->rnti));
+//Zhehui
+          LOG_E(RRC, "MI: RRCConnectionReconfiguration for UE %x\n", ctxt_pP->rnti);
+
 
   /* Configure SRB2 */
   SRB_configList2 = &(ue_context_pP->ue_context.SRB_configList2[xid]);
@@ -6852,6 +6867,8 @@ rrc_eNB_generate_RRCConnectionSetup(
                             SRB_configList,
                             &ue_context_pP->ue_context.physicalConfigDedicated);
   }
+  //Zhehui
+  LOG_E(RRC, "MI: RRCConnectionSetup for UE%x\n", ctxt_pP->rnti);
   LOG_DUMPMSG(RRC,DEBUG_RRC,
               (char *)(ue_p->Srb0.Tx_buffer.Payload),
               ue_p->Srb0.Tx_buffer.payload_size,
@@ -6969,6 +6986,10 @@ rrc_eNB_generate_RRCConnectionSetup(
     MSC_AS_TIME_ARGS(ctxt_pP),
     ue_context_pP->ue_context.rnti,
     ue_p->Srb0.Tx_buffer.payload_size);
+
+//Zhehui
+//	    LOG_E(RRC, "MI: Composing RRCConnectionSetup for UE\n");
+
 
 
   LOG_I(RRC,
@@ -7192,6 +7213,8 @@ rrc_eNB_decode_ccch(
           T_INT(ctxt_pP->subframe), T_INT(ctxt_pP->rnti));
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)(buffer), buffer_length,
                     "[MSG] RRC Connection Reestablishment Request\n");
+	//Zhehui
+	LOG_E(RRC, "MI: RRCConnectionReestablishment from UE %x\n", ctxt_pP->rnti);
         LOG_D(RRC,
               PROTOCOL_RRC_CTXT_UE_FMT"MAC_eNB--- MAC_DATA_IND (rrcConnectionReestablishmentRequest on SRB0) --> RRC_eNB\n",
               PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP));
@@ -7413,8 +7436,7 @@ rrc_eNB_decode_ccch(
       case LTE_UL_CCCH_MessageType__c1_PR_rrcConnectionRequest:
         T(T_ENB_RRC_CONNECTION_REQUEST, T_INT(ctxt_pP->module_id), T_INT(ctxt_pP->frame),
           T_INT(ctxt_pP->subframe), T_INT(ctxt_pP->rnti));
-
-      LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)buffer,
+             LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)buffer,
                   buffer_length,
                     "[MSG] RRC Connection Request\n");
         LOG_D(RRC,
@@ -7423,7 +7445,9 @@ rrc_eNB_decode_ccch(
         ue_context_p = rrc_eNB_get_ue_context(
                          RC.rrc[ctxt_pP->module_id],
                          ctxt_pP->rnti);
-
+//Zhehui
+	LOG_E(RRC, "MI: RRCConnectionRequest from UE %x", ue_context_p->ue_context.rnti);
+ 
         if (ue_context_p != NULL) {
           // erase content
           rrc_eNB_free_mem_UE_context(ctxt_pP, ue_context_p);
@@ -7476,7 +7500,10 @@ rrc_eNB_decode_ccch(
               random_value = (((uint64_t)mme_code) << 32) | m_tmsi;
 
               if ((ue_context_p = rrc_eNB_ue_context_stmsi_exist(ctxt_pP, mme_code, m_tmsi))) {
-                LOG_I(RRC," S-TMSI exists, ue_context_p %p, old rnti %x => %x\n",ue_context_p,ue_context_p->ue_context.rnti,ctxt_pP->rnti);
+                //Zhehui
+		      LOG_E(RRC,"MI: RRC Connection Request from UE with old rnti %x => %x\n", ue_context_p->ue_context.rnti,ctxt_pP->rnti);
+
+		      LOG_D(RRC,"MI: S-TMSI exists, ue_context_p %p, old rnti %x => %x\n",ue_context_p,ue_context_p->ue_context.rnti,ctxt_pP->rnti);
 
                 if (!NODE_IS_CU(RC.rrc[ctxt_pP->module_id]->node_type)) {
                   rrc_mac_remove_ue(ctxt_pP->module_id, ue_context_p->ue_context.rnti);
@@ -7507,6 +7534,8 @@ rrc_eNB_decode_ccch(
                 ue_context_p->ue_context.ue_release_timer_rrc = 0;
                 ue_context_p->ue_context.reestablishment_xid = -1;
               } else {
+		//Zhehui
+                LOG_E(RRC,"MI: RRC Connection Request from a new UE\n");
                 LOG_I(RRC," S-TMSI doesn't exist, setting Initialue_identity_s_TMSI.m_tmsi to %p => %x\n",ue_context_p,m_tmsi);
                 //              ue_context_p = rrc_eNB_get_next_free_ue_context(ctxt_pP, NOT_A_RANDOM_UE_IDENTITY);
                 ue_context_p = rrc_eNB_get_next_free_ue_context(ctxt_pP,random_value);
@@ -7555,15 +7584,30 @@ rrc_eNB_decode_ccch(
             ue_context_p->ue_context.establishment_cause = rrcConnectionRequest->establishmentCause;
             ue_context_p->ue_context.reestablishment_cause = LTE_ReestablishmentCause_spare1;
 
-            if (stmsi_received==0)
-              LOG_I(RRC, PROTOCOL_RRC_CTXT_UE_FMT" Accept new connection from UE random UE identity (0x%" PRIx64 ") MME code %u TMSI %u cause %ld\n",
+            if (stmsi_received==0) {
+//Zhehui
+		    //LOG_E(RRC, "MI: Accept new connection from UE random UE identity (0x%" PRIx64 ") MME code %u TMSI %u cause %ld\n",
+	//			    PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
+          //          ue_context_p->ue_context.random_ue_identity,
+            //        ue_context_p->ue_context.Initialue_identity_s_TMSI.mme_code,
+              //      ue_context_p->ue_context.Initialue_identity_s_TMSI.m_tmsi,
+                //    ue_context_p->ue_context.establishment_cause);
+		    LOG_I(RRC, PROTOCOL_RRC_CTXT_UE_FMT" Accept new connection from UE random UE identity (0x%" PRIx64 ") MME code %u TMSI %u cause %ld\n",
                     PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
                     ue_context_p->ue_context.random_ue_identity,
                     ue_context_p->ue_context.Initialue_identity_s_TMSI.mme_code,
                     ue_context_p->ue_context.Initialue_identity_s_TMSI.m_tmsi,
                     ue_context_p->ue_context.establishment_cause);
-            else
-              LOG_I(RRC, PROTOCOL_RRC_CTXT_UE_FMT" Accept new connection from UE  MME code %u TMSI %u cause %ld\n",
+	    } else {
+            //Zhehui
+	    // LOG_E(RRC, "MI: Accept new connection from UE  MME code %u TMSI %u cause %ld\n",
+            //        PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
+            //        ue_context_p->ue_context.Initialue_identity_s_TMSI.mme_code,
+            //        ue_context_p->ue_context.Initialue_identity_s_TMSI.m_tmsi,
+            //        ue_context_p->ue_context.establishment_cause);
+
+
+	    LOG_I(RRC, PROTOCOL_RRC_CTXT_UE_FMT" Accept new connection from UE  MME code %u TMSI %u cause %ld\n",
                     PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
                     ue_context_p->ue_context.Initialue_identity_s_TMSI.mme_code,
                     ue_context_p->ue_context.Initialue_identity_s_TMSI.m_tmsi,
@@ -7571,7 +7615,8 @@ rrc_eNB_decode_ccch(
 
             if (stmsi_received == 0)
               RC.rrc[ctxt_pP->module_id]->Nb_ue++;
-          } else {
+	    }
+	    } else {
             // no context available
             if (flexran_agent_get_rrc_xface(ctxt_pP->module_id)) {
               flexran_agent_get_rrc_xface(ctxt_pP->module_id)->flexran_agent_notify_ue_state_change(ctxt_pP->module_id,
@@ -7622,7 +7667,10 @@ rrc_eNB_decode_ccch(
                &DCCH_LCHAN_DESC,
                LCHAN_DESC_SIZE);
         rrc_eNB_generate_RRCConnectionSetup(ctxt_pP, ue_context_p, CC_id);
-        LOG_I(RRC, PROTOCOL_RRC_CTXT_UE_FMT"CALLING RLC CONFIG SRB1 (rbid %d)\n",
+         //Zhehui
+	    //LOG_E(RRC, "MI: Initializating Signal Radio Bearer 1 for UE %x\n", ctxt_pP->rnti);
+
+ LOG_I(RRC, PROTOCOL_RRC_CTXT_UE_FMT"CALLING RLC CONFIG SRB1 (rbid %d)\n",
               PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
               Idx);
         MSC_LOG_TX_MESSAGE(
@@ -7774,6 +7822,8 @@ rrc_eNB_decode_dcch(
           LOG_I(RRC, "Processing LTE_RRCConnectionReconfigurationComplete UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
           break;
         }
+//Zhehui
+          LOG_E(RRC, "MI: RRCConnectionReconfigurationComplete from UE %x\n", ctxt_pP->rnti);
 
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)(Rx_sdu),sdu_sizeP,
                     "[MSG] RRC Connection Reconfiguration Complete\n");
@@ -7964,7 +8014,10 @@ rrc_eNB_decode_dcch(
           T_INT(ctxt_pP->subframe), T_INT(ctxt_pP->rnti));
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
                     "[MSG] RRC Connection Reestablishment Complete\n");
-        MSC_LOG_RX_MESSAGE(
+      //Zhehui
+          LOG_E(RRC, "MI: RRCConnectionReconfigurationComplete from UE %x\n", ctxt_pP->rnti);
+
+  MSC_LOG_RX_MESSAGE(
           MSC_RRC_ENB,
           MSC_RRC_UE,
           Rx_sdu,
@@ -8047,6 +8100,9 @@ rrc_eNB_decode_dcch(
           break;
         }
 
+	//Zhehui
+	LOG_E(RRC, "MI: RRCConnectionSetupComplete from UE %x\n", ctxt_pP->rnti);
+
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
                     "[MSG] RRC Connection SetupComplete\n");
         MSC_LOG_RX_MESSAGE(
@@ -8100,6 +8156,9 @@ rrc_eNB_decode_dcch(
           LOG_I(RRC, "Processing securityModeComplete UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
           break;
         }
+//Zhehui
+          LOG_E(RRC, "RRC SecurityModeComplete from UE %x\n", ctxt_pP->rnti);
+
 
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
                     "[MSG] RRC Security Mode Complete\n");
@@ -8175,6 +8234,9 @@ rrc_eNB_decode_dcch(
           LOG_I(RRC, "Processing ueCapabilityInformation UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
           break;
         }
+//Zhehui
+          LOG_E(RRC, "RRC UECapabilityInformation from UE %x\n", ctxt_pP->rnti);
+
 
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
                     "[MSG] RRC UECapablility Information\n");
@@ -8272,6 +8334,9 @@ rrc_eNB_decode_dcch(
           LOG_I(RRC, "Processing ulInformationTransfer UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
           break;
         }
+//Zhehui
+          LOG_E(RRC, "MI: ULInformationTransfer from UE %x\n", ctxt_pP->rnti);
+
 
         LOG_D(RRC,"[MSG] RRC UL Information Transfer \n");
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
