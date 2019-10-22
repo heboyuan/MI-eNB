@@ -7446,7 +7446,7 @@ rrc_eNB_decode_ccch(
                          RC.rrc[ctxt_pP->module_id],
                          ctxt_pP->rnti);
 //Zhehui
-	LOG_E(RRC, "MI: RRCConnectionRequest from UE %x", ue_context_p->ue_context.rnti);
+	//LOG_E(RRC, "MI: RRCConnectionRequest from UE %x", ue_context_p->ue_context.rnti);
  
         if (ue_context_p != NULL) {
           // erase content
