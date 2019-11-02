@@ -104,9 +104,9 @@
 #endif
 
 // #if !defined (XER_PRINT)
-// #define XER_PRINT
+# define XER_PRINT
 // #endif
-
+# define DEBUG_ASN1 1
 
 
 typedef struct xer_sprint_string_s {
@@ -3136,6 +3136,9 @@ do_RRCConnectionSetup(
   if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
     xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
   }
+  //Zhehui
+  LOG_E(RRC, "Sending setup message");
+  xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
                                    NULL,
@@ -3560,8 +3563,10 @@ uint8_t do_RRCConnectionSetup_BR(
   // rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.mac_MainConfig = NULL;
 
 #ifdef XER_PRINT
+  LOG_E(RRC,"ZHEHUI printing");
   xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void*)&dl_ccch_msg);
 #endif
+  LOG_E(RRC, "Sending message");
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
 				   NULL,
 				   (void*)&dl_ccch_msg,
@@ -3582,6 +3587,7 @@ uint8_t do_RRCConnectionSetup_BR(
       msg_p = itti_alloc_new_message_sized (TASK_RRC_ENB, RRC_DL_CCCH, message_string_size + sizeof (IttiMsgText));
       msg_p->ittiMsg.rrc_dl_ccch.size = message_string_size;
       memcpy(&msg_p->ittiMsg.rrc_dl_ccch.text, message_string, message_string_size);
+
 
       itti_send_msg_to_task(TASK_UNKNOWN, ctxt_pP->instance, msg_p);
     }
@@ -3632,9 +3638,9 @@ uint8_t do_SecurityModeCommand(
   dl_dcch_msg.message.choice.c1.choice.securityModeCommand.criticalExtensions.choice.c1.choice.securityModeCommand_r8.securityConfigSMC.securityAlgorithmConfig.integrityProtAlgorithm
     = (e_LTE_SecurityAlgorithmConfig__integrityProtAlgorithm)integrityProtAlgorithm;
 
-  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+//  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
     xer_fprint(stdout, &asn_DEF_LTE_DL_DCCH_Message, (void *)&dl_dcch_msg);
-  }
+//  }
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_DCCH_Message,
                                    NULL,
@@ -3686,9 +3692,9 @@ uint8_t do_UECapabilityEnquiry( const protocol_ctxt_t *const ctxt_pP,
   ASN_SEQUENCE_ADD(&dl_dcch_msg.message.choice.c1.choice.ueCapabilityEnquiry.criticalExtensions.choice.c1.choice.ueCapabilityEnquiry_r8.ue_CapabilityRequest.list,
 		   &rat);
 
-  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+//  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
     xer_fprint(stdout, &asn_DEF_LTE_DL_DCCH_Message, (void *)&dl_dcch_msg);
-  }
+//  }
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_DCCH_Message,
                                    NULL,
@@ -4047,9 +4053,9 @@ uint16_t do_RRCConnectionReconfiguration(const protocol_ctxt_t *const ctxt_pP,
     return -1;
   }
 
-  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+//  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
     xer_fprint(stdout,&asn_DEF_LTE_DL_DCCH_Message,(void *)&dl_dcch_msg);
-  }
+//  }
 
   LOG_I(RRC,"RRCConnectionReconfiguration Encoded %zd bits (%zd bytes)\n",enc_rval.encoded,(enc_rval.encoded+7)/8);
   // for (i=0;i<30;i++)
@@ -4210,9 +4216,9 @@ do_RRCConnectionReestablishment(
   ue_context_pP->ue_context.kenb_ncc = 0;
   rrcConnectionReestablishment->criticalExtensions.choice.c1.choice.rrcConnectionReestablishment_r8.nonCriticalExtension = NULL;
 
-  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+//  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
     xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
-  }
+//  }
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
                                    NULL,
@@ -4888,4 +4894,3 @@ OAI_UECapability_t *fill_ue_capability(char *UE_EUTRA_Capability_xer_fname) {
   }
   return(&UECapability);
 }
-

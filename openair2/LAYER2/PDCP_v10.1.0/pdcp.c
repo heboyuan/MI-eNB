@@ -350,6 +350,8 @@ boolean_t pdcp_data_req(
      * Ask sublayer to transmit data and check return value
      * to see if RLC succeeded
      */
+
+    LOG_MI("0xB0A3", "Frame %d Subframe %d Sequence %d\n", ctxt_pP->frame, ctxt_pP->subframe, current_sn);
     LOG_DUMPMSG(PDCP,DEBUG_PDCP,(char *)pdcp_pdu_p->data,pdcp_pdu_size,
                 "[MSG] PDCP DL %s PDU on rb_id %d\n",(srb_flagP)? "CONTROL" : "DATA", rb_idP);
 
@@ -452,6 +454,8 @@ boolean_t pdcp_data_req(
         } // switch case
       }
     }
+ 
+    LOG_MI("0xB0A3", "After Sending: Frame %d Subframe %d Sequence %d\n", ctxt_pP->frame, ctxt_pP->subframe, current_sn);
   }
 
   if (ctxt_pP->enb_flag == ENB_FLAG_YES) {
@@ -929,7 +933,7 @@ pdcp_data_ind(
    * from its second byte (skipping 0th and 1st octets, i.e.
    * PDCP header)
    */
-  LOG_E(PDCP, "frame: %d, subframe: %d, sequence number: %d, size: %d\n",
+  LOG_MI("0xB0B3", "MI: frame: %d, subframe: %d, sequence number: %d, size: %d\n",
     ctxt_pP->frame, ctxt_pP->subframe, sequence_number, sdu_buffer_sizeP - payload_offset);
 
   if (LINK_ENB_PDCP_TO_GTPV1U) {
@@ -1074,6 +1078,9 @@ pdcp_data_ind(
   } else {
     stop_meas(&UE_pdcp_stats[ctxt_pP->module_id].data_ind);
   }
+
+LOG_MI("0xB0B3", "MI: After sending to GPT frame: %d, subframe: %d, sequence number: %d\n",
+    ctxt_pP->frame, ctxt_pP->subframe, sequence_number);
 
   VCD_SIGNAL_DUMPER_DUMP_FUNCTION_BY_NAME(VCD_SIGNAL_DUMPER_FUNCTIONS_PDCP_DATA_IND,VCD_FUNCTION_OUT);
   return TRUE;
