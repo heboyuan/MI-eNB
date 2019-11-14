@@ -149,6 +149,22 @@ rx_sdu(const module_id_t enb_mod_idP,
     UE_scheduling_control = &(UE_list->UE_sched_ctrl[UE_id]);
     UE_template_ptr = &(UE_list->UE_template[CC_idP][UE_id]);
 
+    LOG_MI("0xB064", "[eNB %d][PUSCH %d] CC_id %d %d.%d Received ULSCH sdu round %d from PHY (rnti %x, UE_id %d) ul_cqi %d\n",
+          enb_mod_idP,
+          harq_pid,
+          CC_idP,
+          frameP,
+          subframeP,
+          UE_scheduling_control->round_UL[CC_idP][harq_pid],
+          current_rnti,
+          UE_id,
+          ul_cqi);
+
+    LOG_MI("0xB064", "CQI Frame_num %d Subframe_num %d ul_cqi %d\n",
+		    frameP,
+		    subframeP,
+		    ul_cqi);
+
     LOG_D(MAC, "[eNB %d][PUSCH %d] CC_id %d %d.%d Received ULSCH sdu round %d from PHY (rnti %x, UE_id %d) ul_cqi %d\n",
           enb_mod_idP,
           harq_pid,
@@ -557,7 +573,14 @@ rx_sdu(const module_id_t enb_mod_idP,
                   rx_ces[i],
                   UE_template_ptr->estimated_ul_buffer,
                   UE_template_ptr->ul_buffer_info[lcgid]);
-          }
+            LOG_MI("0xB064", "BSR Frame_num %d Subframe_num %d LCG0 %u LCG1 %u LCG2 %u LCG3 %u\n",
+			    frameP,
+			    subframeP,
+			    UE_template_ptr->ul_buffer_info[LCGID0],
+			    UE_template_ptr->ul_buffer_info[LCGID1],
+			    UE_template_ptr->ul_buffer_info[LCGID2],
+			    UE_template_ptr->ul_buffer_info[LCGID3]);
+	  }
         } else {
           /* Need error message */
         }
@@ -595,6 +618,14 @@ rx_sdu(const module_id_t enb_mod_idP,
             UE_template_ptr->ul_buffer_info[LCGID1],
             UE_template_ptr->ul_buffer_info[LCGID2],
             UE_template_ptr->ul_buffer_info[LCGID3]);
+
+	  LOG_MI("0xB064", "BSR Frame_num %d Subframe_num %d LCG0 %u LCG1 %u LCG2 %u LCG3 %u\n",
+                            frameP,
+                            subframeP,
+                            UE_template_ptr->ul_buffer_info[LCGID0],
+                            UE_template_ptr->ul_buffer_info[LCGID1],
+                            UE_template_ptr->ul_buffer_info[LCGID2],
+                            UE_template_ptr->ul_buffer_info[LCGID3]);
 
           if (crnti_rx == 1) {
             LOG_D(MAC, "[eNB %d] CC_id %d MAC CE_LCID %d: Received CRNTI.\n",

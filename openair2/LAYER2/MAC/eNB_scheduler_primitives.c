@@ -5089,6 +5089,17 @@ SR_indication(module_id_t mod_idP,
           UE_id,
           cc_idP);
   }
+
+  /*LOG_E(MAC, "[MI] PUCCH-SR Frame %d subframe %d UE_id %d on CC_id%d\n",
+		  frameP,
+		  subframeP,
+		  UE_id,
+		  cc_idP);*/ // PHY-qianru: SR
+  LOG_MI("0xB13C", "Frame_num %d subframe_num %d UE_id %d on CC_id %d\n",
+		  frameP,
+		  subframeP,
+		  UE_id,
+		  cc_idP);
   
   return;
 }

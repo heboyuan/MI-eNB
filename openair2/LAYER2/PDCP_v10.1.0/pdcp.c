@@ -933,8 +933,8 @@ pdcp_data_ind(
    * from its second byte (skipping 0th and 1st octets, i.e.
    * PDCP header)
    */
-  LOG_MI("0xB0B3", "MI: frame: %d, subframe: %d, sequence number: %d, size: %d\n",
-    ctxt_pP->frame, ctxt_pP->subframe, sequence_number, sdu_buffer_sizeP - payload_offset);
+  LOG_MI("0xB0B3", "MI: frame: %d, subframe: %d, sequence number: %d, size: %d Mode %d\n",
+    ctxt_pP->frame, ctxt_pP->subframe, sequence_number, sdu_buffer_sizeP - payload_offset, pdcp_p->rlc_mode);
 
   if (LINK_ENB_PDCP_TO_GTPV1U) {
     if ((TRUE == ctxt_pP->enb_flag) && (FALSE == srb_flagP)) {
@@ -1079,8 +1079,8 @@ pdcp_data_ind(
     stop_meas(&UE_pdcp_stats[ctxt_pP->module_id].data_ind);
   }
 
-LOG_MI("0xB0B3", "MI: After sending to GPT frame: %d, subframe: %d, sequence number: %d\n",
-    ctxt_pP->frame, ctxt_pP->subframe, sequence_number);
+LOG_MI("0xB0B3", "MI: After sending to GPT frame: %d, subframe: %d, sequence number: %d, Mode %d\n",
+    ctxt_pP->frame, ctxt_pP->subframe, sequence_number, pdcp_p->rlc_mode);
 
   VCD_SIGNAL_DUMPER_DUMP_FUNCTION_BY_NAME(VCD_SIGNAL_DUMPER_FUNCTIONS_PDCP_DATA_IND,VCD_FUNCTION_OUT);
   return TRUE;
