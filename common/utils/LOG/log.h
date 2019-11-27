@@ -178,7 +178,17 @@ extern "C" {
 #define SET_LOG_DUMP(B)   g_log->dump_mask = (g_log->dump_mask | B)
 #define CLEAR_LOG_DUMP(B) g_log->dump_mask = (g_log->dump_mask & (~B))
 
-
+typedef enum {
+  MIN_LOG_MI_COMPONENTS = 0,
+  LTE_PDCP_DL_Cipher_Data_PDU = MIN_LOG_MI_COMPONENTS,
+  LTE_PDCP_UL_Cipher_Data_PDU,
+  LTE_MAC_DL_Transport_Block,
+  LTE_MAC_UL_Transport_Block,
+  LTE_RLC_UL_AM_All_PDU,
+  LTE_RLC_DL_AM_All_PDU,
+  MAX_LOG_MI_COMPONENTS,
+}
+comp_name_mi_t;
 
 typedef enum {
   MIN_LOG_COMPONENTS = 0,
@@ -277,11 +287,17 @@ void log_set_instance_type (log_instance_type_t instance);
 
 #ifdef LOG_MAIN
 log_t *g_log;
+mapping mi_map[];
+mapping mi_name_map[];
+int log_mi_level[MAX_LOG_MI_COMPONENTS];
 #else
 #ifdef __cplusplus
 extern "C" {
 #endif
   extern log_t *g_log;
+  extern mapping mi_map[];
+  extern mapping mi_name_map[];
+  extern int log_mi_level[MAX_LOG_MI_COMPONENTS];
 #ifdef __cplusplus
 }
 #endif
@@ -385,7 +401,7 @@ int32_t write_file_matlab(const char *fname, const char *vname, void *data, int 
 #    define LOG_I(c, x...) do { if (T_stdout) { if( g_log->log_component[c].level >= OAILOG_INFO   ) logRecord_mt(__FILE__, __FUNCTION__, __LINE__,c, OAILOG_INFO, x)    ;} else { T(T_LEGACY_ ## c ## _INFO, T_PRINTF(x))    ;}} while (0)
 #    define LOG_D(c, x...) do { if (T_stdout) { if( g_log->log_component[c].level >= OAILOG_DEBUG  ) logRecord_mt(__FILE__, __FUNCTION__, __LINE__,c, OAILOG_DEBUG, x)   ;} else { T(T_LEGACY_ ## c ## _DEBUG, T_PRINTF(x))   ;}} while (0)
 #    define LOG_T(c, x...) do { if (T_stdout) { if( g_log->log_component[c].level >= OAILOG_TRACE  ) logRecord_mt(__FILE__, __FUNCTION__, __LINE__,c, OAILOG_TRACE, x)   ;} else { T(T_LEGACY_ ## c ## _TRACE, T_PRINTF(x))   ;}} while (0)
-#    define LOG_MI(c, ...) do { printf("[MI] %s ",c); printf(__VA_ARGS__); } while (0);
+#    define LOG_MI(c, ...) do { if ( log_mi_level[map_str_to_int(mi_map, c)] == 1 ) { printf("[MI] %s ",c); printf(__VA_ARGS__); } } while (0);
 #    define VLOG(c,l, f, args) do { if (T_stdout) { if( g_log->log_component[c].level >= l  ) vlogRecord_mt(__FILE__, __FUNCTION__, __LINE__,c, l, f, args)   ;} } while (0)
 /* macro used to dump a buffer or a message as in openair2/RRC/LTE/RRC_eNB.c, replaces LOG_F macro */
 #    define LOG_DUMPMSG(c, f, b, s, x...) do {  if(g_log->dump_mask & f) log_dump(c, b, s, LOG_DUMP_CHAR, x)  ;}   while (0)  /* */

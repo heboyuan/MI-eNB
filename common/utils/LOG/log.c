@@ -60,6 +60,26 @@ char * log_mem_filename = &__log_mem_filename[0];
 char logmem_filename[1024] = {0};
 
 
+mapping mi_map[] = {
+  {"0xB0A3", LTE_PDCP_DL_Cipher_Data_PDU},
+  {"0xB0B3", LTE_PDCP_UL_Cipher_Data_PDU},
+  {"0xB063", LTE_MAC_DL_Transport_Block},
+  {"0xB064", LTE_MAC_UL_Transport_Block},
+  {"0xB092", LTE_RLC_UL_AM_All_PDU},
+  {"0xB082", LTE_RLC_DL_AM_All_PDU},
+  {NULL, -1}
+};
+
+mapping mi_name_map[] = {
+  {"LTE_PDCP_DL_Cipher_Data_PDU", LTE_PDCP_DL_Cipher_Data_PDU},
+  {"LTE_PDCP_UL_Cipher_Data_PDU", LTE_PDCP_UL_Cipher_Data_PDU},
+  {"LTE_RLC_DL_AM_All_PDU", LTE_RLC_DL_AM_All_PDU},
+  {"LTE_RLC_UL_AM_All_PDU", LTE_RLC_UL_AM_All_PDU},
+  {"LTE_MAC_DL_Transport_Block", LTE_MAC_DL_Transport_Block},
+  {"LTE_MAC_UL_Transport_Block", LTE_MAC_UL_Transport_Block},
+  {NULL, -1}
+};
+
 mapping log_level_names[] = {
   {"error",  OAILOG_ERR},
   {"warn",   OAILOG_WARNING},
@@ -222,6 +242,23 @@ int write_file_matlab(const char *fname,const char *vname,void *data,int length,
   return 0;
 }
 
+void log_getconfig_mi(void) {
+  paramdef_t logmi_level[MAX_LOG_MI_COMPONENTS];
+  memset(logmi_level, 0, sizeof(paramdef_t)*MAX_LOG_MI_COMPONENTS);
+
+  for (int i = MIN_LOG_MI_COMPONENTS; i < MAX_LOG_MI_COMPONENTS; i++) {
+    sprintf((char *)logmi_level[i].optname,"%s", map_int_to_str(mi_name_map, i));
+    logmi_level[i].defintval = 0;
+    logmi_level[i].numelt = 0;
+    logmi_level[i].type = TYPE_UINT;
+  }
+  config_get( logmi_level, MAX_LOG_MI_COMPONENTS, "mi_log_level");
+  for (int i = MIN_LOG_MI_COMPONENTS; i < MAX_LOG_MI_COMPONENTS; i++) {
+    printf("%s: %d\n", logmi_level[i].optname, *(logmi_level[i].uptr));
+    log_mi_level[i] = *(logmi_level[i].uptr);
+  }
+}
+
 /* get log parameters from configuration file */
 void  log_getconfig(log_t *g_log) {
   char *gloglevel = NULL;
@@ -265,7 +302,6 @@ void  log_getconfig(log_t *g_log) {
 
     sprintf(logparams_level[i].optname,    LOG_CONFIG_LEVEL_FORMAT,       g_log->log_component[i].name);
     sprintf(logparams_logfile[i].optname,  LOG_CONFIG_LOGFILE_FORMAT,     g_log->log_component[i].name);
-
     /* workaround: all log options in existing configuration files use lower case component names
        where component names include uppercase char in log.h....                                */
     for (int j=0 ; j<strlen(logparams_level[i].optname); j++)
@@ -430,6 +466,7 @@ int logInit (void) {
 
   g_log->filelog_name = "/tmp/openair.log";
   log_getconfig(g_log);
+  log_getconfig_mi();
 
   // set all unused component items to 0, they are for non predefined components
   for (i=MAX_LOG_PREDEF_COMPONENTS; i < MAX_LOG_COMPONENTS; i++) {
