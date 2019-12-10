@@ -104,9 +104,9 @@
 #endif
 
 // #if !defined (XER_PRINT)
-# define XER_PRINT
+// # define XER_PRINT
 // #endif
-# define DEBUG_ASN1 1
+// # define DEBUG_ASN1 1
 
 
 typedef struct xer_sprint_string_s {
@@ -249,6 +249,7 @@ uint8_t do_MIB_FeMBMS(rrc_eNB_carrier_data_t *carrier, uint32_t N_RB_DL, uint32_
   //TODO additionalNonBMSFNSubframes-r14  INTEGER (0..3) ? 
 
   //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+  //Zhehui
     xer_fprint(stdout, &asn_DEF_LTE_BCCH_BCH_Message_MBMS, (void *)mib_fembms);
   //}
 
@@ -607,6 +608,7 @@ uint8_t do_SIB1_MBMS(rrc_eNB_carrier_data_t *carrier,
 
 
   //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+  //Zhehui
     xer_fprint(stdout, &asn_DEF_LTE_BCCH_DL_SCH_Message_MBMS, (void *)bcch_message);
   //}
 
@@ -2443,9 +2445,12 @@ uint8_t do_SIB23(uint8_t Mod_id,
 
 #endif
 
-  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+  //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+  //Zhehui
+    printf("[MI] 0xB0C1\n");
     xer_fprint(stdout, &asn_DEF_LTE_BCCH_DL_SCH_Message, (void *)bcch_message);
-  }
+    printf("[/MI]\n");
+  //}
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_BCCH_DL_SCH_Message,
                                    NULL,
@@ -3133,11 +3138,10 @@ do_RRCConnectionSetup(
   mac_MainConfig->phr_Config->choice.setup.prohibitPHR_Timer = LTE_MAC_MainConfig__phr_Config__setup__prohibitPHR_Timer_sf20; // sf20 = 20 subframes // LTE_MAC_MainConfig__phr_Config__setup__prohibitPHR_Timer_sf1000
   mac_MainConfig->phr_Config->choice.setup.dl_PathlossChange = LTE_MAC_MainConfig__phr_Config__setup__dl_PathlossChange_dB1;  // Value dB1 =1 dB, dB3 = 3 dB
 
-  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-    xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
-  }
+  //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+   // xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
+  //}
   //Zhehui
-  LOG_E(RRC, "Sending setup message");
   xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
@@ -3563,7 +3567,7 @@ uint8_t do_RRCConnectionSetup_BR(
   // rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.mac_MainConfig = NULL;
 
 #ifdef XER_PRINT
-  LOG_E(RRC,"ZHEHUI printing");
+  //Zhehui
   xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void*)&dl_ccch_msg);
 #endif
   LOG_E(RRC, "Sending message");
@@ -4252,9 +4256,9 @@ uint8_t do_RRCConnectionReestablishmentReject(uint8_t                    Mod_id,
   // RRCConnectionReestablishmentReject
   rrcConnectionReestablishmentReject->criticalExtensions.present = LTE_RRCConnectionReestablishmentReject__criticalExtensions_PR_rrcConnectionReestablishmentReject_r8;
 
-  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+  //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
     xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
-  }
+  //}
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
                                    NULL,
@@ -4291,9 +4295,9 @@ uint8_t do_RRCConnectionReject(uint8_t                    Mod_id,
   /* let's put a wait time of 1s for the moment */
   rrcConnectionReject->criticalExtensions.choice.c1.choice.rrcConnectionReject_r8.waitTime = 1;
 
-  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
+  //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
     xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
-  }
+  //}
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
                                    NULL,
