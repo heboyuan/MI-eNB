@@ -98,6 +98,10 @@
 
 #include "SIMULATION/TOOLS/sim.h" // for taus
 
+//Zhehui
+// #define DEBUG_RRC 1
+#define RRC_DEFAULT_RAB_IS_AM
+
 
 extern RAN_CONTEXT_t RC;
 
@@ -1328,7 +1332,7 @@ rrc_eNB_generate_SecurityModeCommand(
            ue_context_pP->ue_context.ciphering_algorithm,
            ue_context_pP->ue_context.integrity_algorithm);
   //Zhehui
-  LOG_E(RRC, "MI: RRC SecurityModeCommand for UE %x\n", ctxt_pP->rnti);
+  LOG_MI("0xB0C2", "%x SecurityModeCommand %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
   LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)buffer,size,"[MSG] RRC Security Mode Command\n");
   LOG_I(RRC,
         PROTOCOL_RRC_CTXT_UE_FMT" Logical Channel DL-DCCH, Generate SecurityModeCommand (bytes %d)\n",
@@ -1382,7 +1386,7 @@ rrc_eNB_generate_UECapabilityEnquiry(
            rrc_eNB_get_next_transaction_identifier(ctxt_pP->module_id));
   //Zhehui
 //Zhehui
-          LOG_E(RRC, "MI: RRC UECapabilityEnquiry for UE %x\n", ctxt_pP->rnti);
+          LOG_MI("0xB0C2", "%x UECapabilityEnquiry %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
 
   LOG_I(RRC,
@@ -1445,6 +1449,8 @@ rrc_eNB_generate_RRCConnectionReject(
     MSC_AS_TIME_ARGS(ctxt_pP),
     ue_context_pP == NULL ? -1 : ue_context_pP->ue_context.rnti,
     ue_p->Srb0.Tx_buffer.payload_size);
+    //Zhehui
+  LOG_MI("0xB0C2", "%x RRCConnectionReject %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
   LOG_I(RRC,
         PROTOCOL_RRC_CTXT_UE_FMT" [RAPROC] Logical Channel DL-CCCH, Generating LTE_RRCConnectionReject (bytes %d)\n",
         PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
@@ -2135,7 +2141,7 @@ rrc_eNB_process_RRCConnectionReestablishmentComplete(
     }
   }
   //Zhehui
-  LOG_E(RRC,"MI: RRCConnectionReconfiguration for UE %x\n", ctxt_pP->rnti);
+  LOG_MI("0xB0C2", "%x RRCConnectionReconfiguration %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
   if(size==65535) {
     LOG_E(RRC,"RRC decode err!!! do_RRCConnectionReconfiguration\n");
@@ -2255,7 +2261,8 @@ rrc_eNB_generate_RRCConnectionReestablishmentReject(
     MSC_AS_TIME_ARGS(ctxt_pP),
     ue_context_pP == NULL ? -1 : ue_context_pP->ue_context.rnti,
     ue_p->Srb0.Tx_buffer.payload_size);
-
+//Zhehui
+  LOG_MI("0xB0C2", "%x RRCConnectionReestablishmentReject %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
   LOG_I(RRC,
         PROTOCOL_RRC_CTXT_UE_FMT" [RAPROC] Logical Channel DL-CCCH, Generating LTE_RRCConnectionReestablishmentReject (bytes %d)\n",
         PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
@@ -2303,6 +2310,8 @@ rrc_eNB_generate_RRCConnectionRelease(
     ue_context_pP->ue_context.rnti,
     rrc_eNB_mui,
     size);
+  //Zhehui
+  LOG_MI("0xB0C2", "%x RRCConnectionRelease %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
   while (pthread_mutex_trylock(&rrc_release_freelist)) {
     /* spin... */
   }
@@ -2381,7 +2390,7 @@ rrc_eNB_generate_dedicatedRRCConnectionReconfiguration(const protocol_ctxt_t *co
   uint8_t xid = rrc_eNB_get_next_transaction_identifier(ctxt_pP->module_id);   //Transaction_id,
   DRB_configList2=&ue_context_pP->ue_context.DRB_configList2[xid];
 //Zhehui
-          LOG_E(RRC, "MI: RRCConnectionReconfiguration for UE %x\n", ctxt_pP->rnti);
+  LOG_MI("0xB0C2", "%x RRCConnectionReconfiguration %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
 
   if (*DRB_configList2) {
@@ -3066,7 +3075,7 @@ void rrc_eNB_generate_defaultRRCConnectionReconfiguration(const protocol_ctxt_t 
     T_INT(ctxt_pP->subframe), 
     T_INT(ctxt_pP->rnti));
 //Zhehui
-          LOG_E(RRC, "MI: RRCConnectionReconfiguration for UE %x\n", ctxt_pP->rnti);
+  LOG_MI("0xB0C2", "%x RRCConnectionReconfiguration %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
 
   /* Configure SRB2 */
@@ -6868,7 +6877,7 @@ rrc_eNB_generate_RRCConnectionSetup(
                             &ue_context_pP->ue_context.physicalConfigDedicated);
   }
   //Zhehui
-  LOG_E(RRC, "MI: RRCConnectionSetup for UE%x\n", ctxt_pP->rnti);
+  LOG_MI("0xB0C2", "%x RRCConnectionSetup %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
   LOG_DUMPMSG(RRC,DEBUG_RRC,
               (char *)(ue_p->Srb0.Tx_buffer.Payload),
               ue_p->Srb0.Tx_buffer.payload_size,
@@ -7200,6 +7209,9 @@ rrc_eNB_decode_ccch(
     return -1;
   }
 
+  //Zhehui
+        xer_fprint(stdout, &asn_DEF_LTE_UL_CCCH_Message, (void *)ul_ccch_msg);
+
   if (ul_ccch_msg->message.present == LTE_UL_CCCH_MessageType_PR_c1) {
     switch (ul_ccch_msg->message.choice.c1.present) {
       case LTE_UL_CCCH_MessageType__c1_PR_NOTHING:
@@ -7214,7 +7226,7 @@ rrc_eNB_decode_ccch(
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)(buffer), buffer_length,
                     "[MSG] RRC Connection Reestablishment Request\n");
 	//Zhehui
-	LOG_E(RRC, "MI: RRCConnectionReestablishment from UE %x\n", ctxt_pP->rnti);
+	LOG_MI("0xB0C2", "%x RRCConnectionReestablishment %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
         LOG_D(RRC,
               PROTOCOL_RRC_CTXT_UE_FMT"MAC_eNB--- MAC_DATA_IND (rrcConnectionReestablishmentRequest on SRB0) --> RRC_eNB\n",
               PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP));
@@ -7439,6 +7451,7 @@ rrc_eNB_decode_ccch(
              LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)buffer,
                   buffer_length,
                     "[MSG] RRC Connection Request\n");
+	// LOG_E(RRC, (char *)buffer);
         LOG_D(RRC,
               PROTOCOL_RRC_CTXT_UE_FMT"MAC_eNB --- MAC_DATA_IND  (rrcConnectionRequest on SRB0) --> RRC_eNB\n",
               PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP));
@@ -7446,7 +7459,9 @@ rrc_eNB_decode_ccch(
                          RC.rrc[ctxt_pP->module_id],
                          ctxt_pP->rnti);
 //Zhehui
+        //xer_fprint(stdout, &asn_DEF_LTE_UL_CCCH_Message, (void *)ul_ccch_msg);
 	//LOG_E(RRC, "MI: RRCConnectionRequest from UE %x", ue_context_p->ue_context.rnti);
+	
  
         if (ue_context_p != NULL) {
           // erase content
@@ -7535,7 +7550,7 @@ rrc_eNB_decode_ccch(
                 ue_context_p->ue_context.reestablishment_xid = -1;
               } else {
 		//Zhehui
-                LOG_E(RRC,"MI: RRC Connection Request from a new UE\n");
+                LOG_MI("0xB0C2", "0000 RRCConnectionSetupRequest\n");
                 LOG_I(RRC," S-TMSI doesn't exist, setting Initialue_identity_s_TMSI.m_tmsi to %p => %x\n",ue_context_p,m_tmsi);
                 //              ue_context_p = rrc_eNB_get_next_free_ue_context(ctxt_pP, NOT_A_RANDOM_UE_IDENTITY);
                 ue_context_p = rrc_eNB_get_next_free_ue_context(ctxt_pP,random_value);
@@ -7668,7 +7683,7 @@ rrc_eNB_decode_ccch(
                LCHAN_DESC_SIZE);
         rrc_eNB_generate_RRCConnectionSetup(ctxt_pP, ue_context_p, CC_id);
          //Zhehui
-	    //LOG_E(RRC, "MI: Initializating Signal Radio Bearer 1 for UE %x\n", ctxt_pP->rnti);
+	    //LOG_E(RRC, "MI: Initializating Signal Radio Bearer 1 for UE %x %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
  LOG_I(RRC, PROTOCOL_RRC_CTXT_UE_FMT"CALLING RLC CONFIG SRB1 (rbid %d)\n",
               PROTOCOL_RRC_CTXT_UE_ARGS(ctxt_pP),
@@ -7787,6 +7802,11 @@ rrc_eNB_decode_dcch(
                    ctxt_pP->rnti);
 
   if (ul_dcch_msg->message.present == LTE_UL_DCCH_MessageType_PR_c1) {
+//Zhehui
+    //TODO
+    printf("[MI] 0xB0C1\n");
+    xer_fprint(stdout, &asn_DEF_LTE_UL_DCCH_Message, (void *)ul_dcch_msg);
+    printf("[/MI]\n");
     switch (ul_dcch_msg->message.choice.c1.present) {
       case LTE_UL_DCCH_MessageType__c1_PR_NOTHING:   /* No components present */
         break;
@@ -7798,7 +7818,7 @@ rrc_eNB_decode_dcch(
 
         // to avoid segmentation fault
         if(!ue_context_p) {
-          LOG_I(RRC, "Processing measurementReport UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
+          LOG_I(RRC, "Processing measurementReport UE %x, ue_context_p is NULL %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
           break;
         }
 
@@ -7819,11 +7839,11 @@ rrc_eNB_decode_dcch(
 
         // to avoid segmentation fault
         if(!ue_context_p) {
-          LOG_I(RRC, "Processing LTE_RRCConnectionReconfigurationComplete UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
+          LOG_I(RRC, "Processing LTE_RRCConnectionReconfigurationComplete UE %x, ue_context_p is NULL %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
           break;
         }
 //Zhehui
-          LOG_E(RRC, "MI: RRCConnectionReconfigurationComplete from UE %x\n", ctxt_pP->rnti);
+          LOG_MI("0xB0C2", "%x RRCConnectionReconfigurationComplete %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)(Rx_sdu),sdu_sizeP,
                     "[MSG] RRC Connection Reconfiguration Complete\n");
@@ -8015,7 +8035,7 @@ rrc_eNB_decode_dcch(
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
                     "[MSG] RRC Connection Reestablishment Complete\n");
       //Zhehui
-          LOG_E(RRC, "MI: RRCConnectionReconfigurationComplete from UE %x\n", ctxt_pP->rnti);
+          LOG_MI("0xB0C2", "%x RRCConnectionReconfigurationComplete %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
   MSC_LOG_RX_MESSAGE(
           MSC_RRC_ENB,
@@ -8096,12 +8116,12 @@ rrc_eNB_decode_dcch(
 
         // to avoid segmentation fault
         if(!ue_context_p) {
-          LOG_I(RRC, "Processing LTE_RRCConnectionSetupComplete UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
+          LOG_I(RRC, "Processing LTE_RRCConnectionSetupComplete UE %x, ue_context_p is NULL %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
           break;
         }
 
 	//Zhehui
-	LOG_E(RRC, "MI: RRCConnectionSetupComplete from UE %x\n", ctxt_pP->rnti);
+	LOG_MI("0xB0C2", "%x RRCConnectionSetupComplete %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
                     "[MSG] RRC Connection SetupComplete\n");
@@ -8153,11 +8173,11 @@ rrc_eNB_decode_dcch(
 
         // to avoid segmentation fault
         if(!ue_context_p) {
-          LOG_I(RRC, "Processing securityModeComplete UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
+          LOG_I(RRC, "Processing securityModeComplete UE %x, ue_context_p is NULL %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
           break;
         }
 //Zhehui
-          LOG_E(RRC, "RRC SecurityModeComplete from UE %x\n", ctxt_pP->rnti);
+          LOG_MI("0xB0C2", "%x SecurityModeComplete %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
 
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
@@ -8218,7 +8238,8 @@ rrc_eNB_decode_dcch(
         if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
           xer_fprint(stdout, &asn_DEF_LTE_UL_DCCH_Message, (void *)ul_dcch_msg);
         }
-
+  //Zhehui
+  LOG_MI("0xB0C2", "%x SecurityModeFailure %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
         // cancel the security mode in PDCP
         // followup with the remaining procedure
         //#warning "LG Removed rrc_eNB_generate_UECapabilityEnquiry after receiving securityModeFailure"
@@ -8231,11 +8252,11 @@ rrc_eNB_decode_dcch(
 
         // to avoid segmentation fault
         if(!ue_context_p) {
-          LOG_I(RRC, "Processing ueCapabilityInformation UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
+          LOG_I(RRC, "Processing ueCapabilityInformation UE %x, ue_context_p is NULL %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
           break;
         }
 //Zhehui
-          LOG_E(RRC, "RRC UECapabilityInformation from UE %x\n", ctxt_pP->rnti);
+        LOG_MI("0xB0C2", "%x UECapabilityInformation %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
 
         LOG_DUMPMSG(RRC,DEBUG_RRC,(char *)Rx_sdu,sdu_sizeP,
@@ -8264,10 +8285,10 @@ rrc_eNB_decode_dcch(
           xer_fprint(stdout, &asn_DEF_LTE_UL_DCCH_Message, (void *)ul_dcch_msg);
         }
 
-        LOG_I(RRC, "got UE capabilities for UE %x\n", ctxt_pP->rnti);
+        LOG_I(RRC, "got UE capabilities for UE %x %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
         if (ue_context_p->ue_context.UE_Capability) {
-          LOG_I(RRC, "freeing old UE capabilities for UE %x\n", ctxt_pP->rnti);
+          LOG_I(RRC, "freeing old UE capabilities for UE %x %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
           ASN_STRUCT_FREE(asn_DEF_LTE_UE_EUTRA_Capability,
                           ue_context_p->ue_context.UE_Capability);
           ue_context_p->ue_context.UE_Capability = 0;
@@ -8331,11 +8352,11 @@ rrc_eNB_decode_dcch(
 
         // to avoid segmentation fault
         if(!ue_context_p) {
-          LOG_I(RRC, "Processing ulInformationTransfer UE %x, ue_context_p is NULL\n", ctxt_pP->rnti);
+          LOG_I(RRC, "Processing ulInformationTransfer UE %x, ue_context_p is NULL %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
           break;
         }
 //Zhehui
-          LOG_E(RRC, "MI: ULInformationTransfer from UE %x\n", ctxt_pP->rnti);
+        LOG_MI("0xB0C2", "%x ULInformationTransfer %d %d\n", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe);
 
 
         LOG_D(RRC,"[MSG] RRC UL Information Transfer \n");
@@ -9515,9 +9536,6 @@ LTE_SL_CommConfig_r12_t rrc_eNB_get_sidelink_commTXPool( const protocol_ctxt_t *
   sc_CommTxConfig->ue_SelectedResourceConfig_r12->data_TF_ResourceConfig_r12.subframeBitmap_r12.choice.bs4_r12.buf[0] = 0xF0;
   sc_CommTxConfig->ue_SelectedResourceConfig_r12->data_TF_ResourceConfig_r12.subframeBitmap_r12.choice.bs4_r12.buf[1] = 0xFF;
   sc_CommTxConfig->ue_SelectedResourceConfig_r12->data_TF_ResourceConfig_r12.subframeBitmap_r12.choice.bs4_r12.buf[2] = 0xFF;
-  sc_CommTxConfig->ue_SelectedResourceConfig_r12->data_TF_ResourceConfig_r12.subframeBitmap_r12.choice.bs4_r12.buf[3] = 0xFF;
-  sc_CommTxConfig->ue_SelectedResourceConfig_r12->data_TF_ResourceConfig_r12.subframeBitmap_r12.choice.bs4_r12.buf[4] = 0xFF;
-  //rxParametersNCell_r12
   sc_CommTxConfig->rxParametersNCell_r12 = CALLOC (1, sizeof (*sc_CommTxConfig->rxParametersNCell_r12));
   sc_CommTxConfig->rxParametersNCell_r12->tdd_Config_r12 = CALLOC (1, sizeof (*sc_CommTxConfig->rxParametersNCell_r12->tdd_Config_r12 ));
   sc_CommTxConfig->rxParametersNCell_r12->tdd_Config_r12->subframeAssignment = 0 ;

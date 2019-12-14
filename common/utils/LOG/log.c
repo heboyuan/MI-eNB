@@ -67,6 +67,7 @@ mapping mi_map[] = {
   {"0xB064", LTE_MAC_UL_Transport_Block},
   {"0xB092", LTE_RLC_UL_AM_All_PDU},
   {"0xB082", LTE_RLC_DL_AM_All_PDU},
+  {"0xB0C2", LTE_RRC_Event},
   {NULL, -1}
 };
 
@@ -77,6 +78,7 @@ mapping mi_name_map[] = {
   {"LTE_RLC_UL_AM_All_PDU", LTE_RLC_UL_AM_All_PDU},
   {"LTE_MAC_DL_Transport_Block", LTE_MAC_DL_Transport_Block},
   {"LTE_MAC_UL_Transport_Block", LTE_MAC_UL_Transport_Block},
+  {"LTE_RRC_Event", LTE_RRC_Event},
   {NULL, -1}
 };
 
