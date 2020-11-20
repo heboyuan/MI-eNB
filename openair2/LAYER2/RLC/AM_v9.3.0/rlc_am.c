@@ -1021,7 +1021,12 @@ rlc_am_mac_data_indication (
         tb_size_in_bytes   = ((struct mac_tb_ind *) (tb_p->data))->size;
         if ((((struct mac_tb_ind *) (tb_p->data))->data_ptr[0] & RLC_DC_MASK) == RLC_DC_DATA_PDU ) {
           if (rlc_am_get_data_pdu_infos(ctxt_pP,l_rlc_p,rlc_am_pdu_sn_10_p, tb_size_in_bytes, &pdu_info) >= 0) {
-            LOG_MI("0xB092", "%d %d %d %d %d %d\n", ctxt_pP->frame, ctxt_pP->subframe, l_rlc_p->rb_id, tb_size_in_bytes, pdu_info.header_size, pdu_info.payload_size);
+            LOG_MI("0xB092", "1 %d %d %d %d %d %d\n", ctxt_pP->frame, ctxt_pP->subframe, l_rlc_p->rb_id, tb_size_in_bytes, pdu_info.header_size, pdu_info.payload_size);
+          }
+        } else {
+          if (rlc_am_get_control_pdu_infos(rlc_am_pdu_sn_10_p, &tb_size_in_bytes, &l_rlc_p->control_pdu_info) >= 0) {
+            tb_size_in_bytes   = ((struct mac_tb_req *) (tb_p->data))->tb_size;
+            LOG_MI("0xB092", "0 %d %d %d %d %d %d\n", ctxt_pP->frame, ctxt_pP->subframe, l_rlc_p->rb_id, tb_size_in_bytes, tb_size_in_bytes, 0);
           }
         }
         tb_p = tb_p->next;

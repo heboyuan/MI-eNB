@@ -258,7 +258,9 @@ rx_sdu(const module_id_t enb_mod_idP,
       first_rb = UE_template_ptr->first_rb_ul[harq_pid];
 
       /* Program NACK for PHICH */
-      LOG_D(MAC, "Programming PHICH NACK for rnti %x harq_pid %d (first_rb %d)\n",
+      LOG_I(MAC, "Programming PHICH NACK for frame %d, subframe %d, rnti %x harq_pid %d (first_rb %d)\n",
+            frameP,
+	    subframeP,
             current_rnti,
             harq_pid,
             first_rb);
@@ -890,6 +892,7 @@ rx_sdu(const module_id_t enb_mod_idP,
             }
 
             if ((rx_lengths[i] < SCH_PAYLOAD_SIZE_MAX) && (rx_lengths[i] > 0)) {  // MAX SIZE OF transport block
+              LOG_MI("0xB092", "%d ", subframeP);
               mac_rlc_data_ind(enb_mod_idP, current_rnti, enb_mod_idP, frameP, ENB_FLAG_YES, MBMS_FLAG_NO, rx_lcids[i], (char *) payload_ptr, rx_lengths[i], 1, NULL);
               UE_list->eNB_UE_stats[CC_idP][UE_id].num_pdu_rx[rx_lcids[i]] += 1;
               UE_list->eNB_UE_stats[CC_idP][UE_id].num_bytes_rx[rx_lcids[i]] += rx_lengths[i];
@@ -947,7 +950,9 @@ rx_sdu(const module_id_t enb_mod_idP,
   }
 
   /* Program ACK for PHICH */
-  LOG_D(MAC, "Programming PHICH ACK for rnti %x harq_pid %d (first_rb %d)\n",
+  LOG_I(MAC, "Programming PHICH ACK for frame %d, subframe %d, rnti %x harq_pid %d (first_rb %d)\n",
+        frameP,
+	subframeP,
         current_rnti,
         harq_pid,
         first_rb);
@@ -1600,6 +1605,13 @@ schedule_ulsch_rnti(module_id_t   module_idP,
            */
           snr = (5 * UE_sched_ctrl_ptr->pusch_snr[CC_id] - 640) / 10;
           target_snr = mac->puSch10xSnr / 10;
+	  LOG_I(MAC, "[eNB %d] ULSCH scheduler: frame %d, subframe %d, harq_pid %d, snr/target snr %d/%d\n",
+                  module_idP,
+                  frameP,
+                  subframeP,
+                  harq_pid,
+                  snr,
+                  target_snr);
 
           /*
            * This assumes accumulated tpc
