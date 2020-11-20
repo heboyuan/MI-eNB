@@ -455,7 +455,6 @@ boolean_t pdcp_data_req(
       }
     }
  
-    // LOG_MI("0xB0A3", "After Sending: Frame %d Subframe %d Sequence %d\n", ctxt_pP->frame, ctxt_pP->subframe, current_sn);
   }
 
   if (ctxt_pP->enb_flag == ENB_FLAG_YES) {
@@ -933,8 +932,6 @@ pdcp_data_ind(
    * from its second byte (skipping 0th and 1st octets, i.e.
    * PDCP header)
    */
-  // LOG_MI("0xB0B3", "MI: frame: %d, subframe: %d, sequence number: %d, size: %d Mode %d\n",
-  //  ctxt_pP->frame, ctxt_pP->subframe, sequence_number, sdu_buffer_sizeP - payload_offset, pdcp_p->rlc_mode);
 
   if (LINK_ENB_PDCP_TO_GTPV1U) {
     if ((TRUE == ctxt_pP->enb_flag) && (FALSE == srb_flagP)) {
