@@ -263,12 +263,6 @@ int config_libconfig_get(paramdef_t *cfgoptions,int numoptions, char *prefix ) {
     }
   } /* for loop on options */
 
-  /*
-  printf("[LIBCONFIG] %s: %i/%i parameters successfully set, (%i to default value)\n",
-         ((prefix == NULL)?"(root)":prefix),
-         status,numoptions,numdefvals );
-  */
-
   if (fatalerror == 1) {
     fprintf(stderr,"[LIBCONFIG] fatal errors found when processing  %s \n", libconfig_privdata.configfile );
     config_libconfig_end();

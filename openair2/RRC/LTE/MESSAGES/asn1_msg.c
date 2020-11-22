@@ -103,12 +103,6 @@
   #define msg printf
 #endif
 
-// #if !defined (XER_PRINT)
-// # define XER_PRINT
-// #endif
-// # define DEBUG_ASN1 1
-
-
 typedef struct xer_sprint_string_s {
   char *string;
   size_t string_size;
@@ -249,7 +243,6 @@ uint8_t do_MIB_FeMBMS(rrc_eNB_carrier_data_t *carrier, uint32_t N_RB_DL, uint32_
   //TODO additionalNonBMSFNSubframes-r14  INTEGER (0..3) ? 
 
   //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-  //Zhehui
     xer_fprint(stdout, &asn_DEF_LTE_BCCH_BCH_Message_MBMS, (void *)mib_fembms);
   //}
 
@@ -608,7 +601,6 @@ uint8_t do_SIB1_MBMS(rrc_eNB_carrier_data_t *carrier,
 
 
   //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-  //Zhehui
     xer_fprint(stdout, &asn_DEF_LTE_BCCH_DL_SCH_Message_MBMS, (void *)bcch_message);
   //}
 
@@ -878,8 +870,6 @@ uint8_t do_SIB1(rrc_eNB_carrier_data_t *carrier,
   //  assign_enum(&(*sib1)->cellAccessRelatedInfo.intraFreqReselection,SystemInformationBlockType1__cellAccessRelatedInfo__intraFreqReselection_allowed);
   (*sib1)->cellAccessRelatedInfo.intraFreqReselection=LTE_SystemInformationBlockType1__cellAccessRelatedInfo__intraFreqReselection_notAllowed;
   (*sib1)->cellAccessRelatedInfo.csg_Indication=0;
-//Zhehui
-//  (*sib1)->cellSelectionInfo.q_RxLevMin=-65;
   (*sib1)->cellSelectionInfo.q_RxLevMin=-65;
   (*sib1)->cellSelectionInfo.q_RxLevMinOffset=NULL;
   //(*sib1)->p_Max = CALLOC(1, sizeof(P_Max_t));
@@ -898,9 +888,7 @@ uint8_t do_SIB1(rrc_eNB_carrier_data_t *carrier,
   //  ASN_SEQUENCE_ADD(&schedulingInfo.sib_MappingInfo.list,NULL);
 #if defined(ENABLE_ITTI)
 
-  //Zhehui
   if (configuration->frame_type[CC_id] == TDD)
-  //if (true)
 #endif
   {
     (*sib1)->tdd_Config =                             CALLOC(1,sizeof(struct LTE_TDD_Config));
@@ -2445,12 +2433,9 @@ uint8_t do_SIB23(uint8_t Mod_id,
 
 #endif
 
-  //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-  //Zhehui
-    printf("[MI] 0xB0C1\n");
-    xer_fprint(stdout, &asn_DEF_LTE_BCCH_DL_SCH_Message, (void *)bcch_message);
-    printf("[/MI]\n");
-  //}
+  printf("[MI] 0xB0C1\n");
+  xer_fprint(stdout, &asn_DEF_LTE_BCCH_DL_SCH_Message, (void *)bcch_message);
+  printf("[/MI]\n");
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_BCCH_DL_SCH_Message,
                                    NULL,
@@ -2836,9 +2821,7 @@ do_RRCConnectionSetup(
   logicalchannelgroup = CALLOC(1,sizeof(long));
   *logicalchannelgroup=0;
   SRB1_ul_SpecificParameters->logicalChannelGroup = logicalchannelgroup;
-  //Zhehui
   ASN_SEQUENCE_ADD(&(*SRB_configList)->list,SRB1_config);
-  //free(*SRB_configList);
   // PhysicalConfigDedicated
   physicalConfigDedicated2 = CALLOC(1,sizeof(*physicalConfigDedicated2));
   *physicalConfigDedicated = physicalConfigDedicated2;
@@ -3100,9 +3083,7 @@ do_RRCConnectionSetup(
   rrcConnectionSetup->rrc_TransactionIdentifier = Transaction_id;
   rrcConnectionSetup->criticalExtensions.present = LTE_RRCConnectionSetup__criticalExtensions_PR_c1;
   rrcConnectionSetup->criticalExtensions.choice.c1.present = LTE_RRCConnectionSetup__criticalExtensions__c1_PR_rrcConnectionSetup_r8 ;
-//Zhehui
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = *SRB_configList;
-  //rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.srb_ToAddModList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.drb_ToAddModList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.drb_ToReleaseList = NULL;
   rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.sps_Config = NULL;
@@ -3138,10 +3119,6 @@ do_RRCConnectionSetup(
   mac_MainConfig->phr_Config->choice.setup.prohibitPHR_Timer = LTE_MAC_MainConfig__phr_Config__setup__prohibitPHR_Timer_sf20; // sf20 = 20 subframes // LTE_MAC_MainConfig__phr_Config__setup__prohibitPHR_Timer_sf1000
   mac_MainConfig->phr_Config->choice.setup.dl_PathlossChange = LTE_MAC_MainConfig__phr_Config__setup__dl_PathlossChange_dB1;  // Value dB1 =1 dB, dB3 = 3 dB
 
-  //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-   // xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
-  //}
-  //Zhehui
   xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
@@ -3257,10 +3234,7 @@ uint8_t do_RRCConnectionSetup_BR(
   *logicalchannelgroup=0;
   SRB1_ul_SpecificParameters->logicalChannelGroup = logicalchannelgroup;
 
-//Zhehui
   ASN_SEQUENCE_ADD(&(*SRB_configList)->list,SRB1_config);
-  //SRB1_config = NULL;
-  //LOG_I(RRC,"Edited");
   // PhysicalConfigDedicated
 
   physicalConfigDedicated2 = CALLOC(1,sizeof(*physicalConfigDedicated2));
@@ -3567,7 +3541,6 @@ uint8_t do_RRCConnectionSetup_BR(
   // rrcConnectionSetup->criticalExtensions.choice.c1.choice.rrcConnectionSetup_r8.radioResourceConfigDedicated.mac_MainConfig = NULL;
 
 #ifdef XER_PRINT
-  //Zhehui
   xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void*)&dl_ccch_msg);
 #endif
   LOG_E(RRC, "Sending message");
@@ -3591,7 +3564,6 @@ uint8_t do_RRCConnectionSetup_BR(
       msg_p = itti_alloc_new_message_sized (TASK_RRC_ENB, RRC_DL_CCCH, message_string_size + sizeof (IttiMsgText));
       msg_p->ittiMsg.rrc_dl_ccch.size = message_string_size;
       memcpy(&msg_p->ittiMsg.rrc_dl_ccch.text, message_string, message_string_size);
-
 
       itti_send_msg_to_task(TASK_UNKNOWN, ctxt_pP->instance, msg_p);
     }
@@ -3642,9 +3614,7 @@ uint8_t do_SecurityModeCommand(
   dl_dcch_msg.message.choice.c1.choice.securityModeCommand.criticalExtensions.choice.c1.choice.securityModeCommand_r8.securityConfigSMC.securityAlgorithmConfig.integrityProtAlgorithm
     = (e_LTE_SecurityAlgorithmConfig__integrityProtAlgorithm)integrityProtAlgorithm;
 
-//  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-    xer_fprint(stdout, &asn_DEF_LTE_DL_DCCH_Message, (void *)&dl_dcch_msg);
-//  }
+  xer_fprint(stdout, &asn_DEF_LTE_DL_DCCH_Message, (void *)&dl_dcch_msg);
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_DCCH_Message,
                                    NULL,
@@ -3696,9 +3666,7 @@ uint8_t do_UECapabilityEnquiry( const protocol_ctxt_t *const ctxt_pP,
   ASN_SEQUENCE_ADD(&dl_dcch_msg.message.choice.c1.choice.ueCapabilityEnquiry.criticalExtensions.choice.c1.choice.ueCapabilityEnquiry_r8.ue_CapabilityRequest.list,
 		   &rat);
 
-//  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-    xer_fprint(stdout, &asn_DEF_LTE_DL_DCCH_Message, (void *)&dl_dcch_msg);
-//  }
+  xer_fprint(stdout, &asn_DEF_LTE_DL_DCCH_Message, (void *)&dl_dcch_msg);
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_DCCH_Message,
                                    NULL,
@@ -4057,9 +4025,7 @@ uint16_t do_RRCConnectionReconfiguration(const protocol_ctxt_t *const ctxt_pP,
     return -1;
   }
 
-//  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-    xer_fprint(stdout,&asn_DEF_LTE_DL_DCCH_Message,(void *)&dl_dcch_msg);
-//  }
+  xer_fprint(stdout,&asn_DEF_LTE_DL_DCCH_Message,(void *)&dl_dcch_msg);
 
   LOG_I(RRC,"RRCConnectionReconfiguration Encoded %zd bits (%zd bytes)\n",enc_rval.encoded,(enc_rval.encoded+7)/8);
   // for (i=0;i<30;i++)
@@ -4220,9 +4186,7 @@ do_RRCConnectionReestablishment(
   ue_context_pP->ue_context.kenb_ncc = 0;
   rrcConnectionReestablishment->criticalExtensions.choice.c1.choice.rrcConnectionReestablishment_r8.nonCriticalExtension = NULL;
 
-//  if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-    xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
-//  }
+  xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
                                    NULL,
@@ -4256,9 +4220,7 @@ uint8_t do_RRCConnectionReestablishmentReject(uint8_t                    Mod_id,
   // RRCConnectionReestablishmentReject
   rrcConnectionReestablishmentReject->criticalExtensions.present = LTE_RRCConnectionReestablishmentReject__criticalExtensions_PR_rrcConnectionReestablishmentReject_r8;
 
-  //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-    xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
-  //}
+  xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
                                    NULL,
@@ -4295,9 +4257,7 @@ uint8_t do_RRCConnectionReject(uint8_t                    Mod_id,
   /* let's put a wait time of 1s for the moment */
   rrcConnectionReject->criticalExtensions.choice.c1.choice.rrcConnectionReject_r8.waitTime = 1;
 
-  //if ( LOG_DEBUGFLAG(DEBUG_ASN1) ) {
-    xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
-  //}
+  xer_fprint(stdout, &asn_DEF_LTE_DL_CCCH_Message, (void *)&dl_ccch_msg);
 
   enc_rval = uper_encode_to_buffer(&asn_DEF_LTE_DL_CCCH_Message,
                                    NULL,
