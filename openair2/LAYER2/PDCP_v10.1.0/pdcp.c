@@ -351,7 +351,7 @@ boolean_t pdcp_data_req(
      * to see if RLC succeeded
      */
 
-    LOG_MI("0xB0A3", "%d %d %d\n", ctxt_pP->frame, ctxt_pP->subframe, current_sn);
+    LOG_MI("0xB0A3", "%d %d %d %d\n", ctxt_pP->frame, ctxt_pP->subframe, current_sn, pdcp_pdu_size);
     LOG_DUMPMSG(PDCP,DEBUG_PDCP,(char *)pdcp_pdu_p->data,pdcp_pdu_size,
                 "[MSG] PDCP DL %s PDU on rb_id %d\n",(srb_flagP)? "CONTROL" : "DATA", rb_idP);
 

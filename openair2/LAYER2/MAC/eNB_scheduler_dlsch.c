@@ -2667,12 +2667,11 @@ fill_DLSCH_dci(module_id_t module_idP,
                 rballoc_sub);
             dl_config_pdu->dci_dl_pdu.dci_dl_pdu_rel8.resource_allocation_type = 0;
 
-            LOG_MI("0xB173", "DCI Frame %d, SubFrame %d, CC_id %d, UE_id: %d, number of rb %d, coding: %d\n",
+            LOG_MI("0xB173", "%d %d %d %d %d %d\n",
               frameP,
               subframeP,
-              CC_id,
-              UE_id,
               nb_rb,
+              CC_id, UE_id,
               dl_config_pdu->dci_dl_pdu.dci_dl_pdu_rel8.resource_block_coding
             );
 
