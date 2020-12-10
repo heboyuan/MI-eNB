@@ -63,7 +63,7 @@
 
 #include "ENB_APP/enb_config.h"
 
-
+#include <time.h>
 
 extern int otg_enabled;
 extern uint8_t nfapi_mode;
@@ -284,6 +284,11 @@ boolean_t pdcp_data_req(
         }
 
         VCD_SIGNAL_DUMPER_DUMP_FUNCTION_BY_NAME(VCD_SIGNAL_DUMPER_FUNCTIONS_PDCP_DATA_REQ,VCD_FUNCTION_OUT);
+        // MI format: cfg idx, valid pdu, mode, frame, subframe, sequence number length, sequence number, size, bear id, cipheringAlgorithm, timestamp
+        time_t time_now = time(NULL);
+        char* time_str = ctime(&time_now);
+        LOG_MI("0xB0A3", "cfg idx: %d, valid pdu: %d, mode: %d, frame: %d, subframe: %d, sequence number length: %d, sequence number: %d, size: %d, bear id: %d, cipheringAlgorithm: %d, timestamp: %s\n", 
+          srb_flagP ? 33 : 3, 0, pdcp_p->rlc_mode, ctxt_pP->frame, ctxt_pP->subframe, pdcp_p->seq_num_size, current_sn, pdcp_pdu_size, rb_idP, pdcp_p->cipheringAlgorithm, time_str);
         return FALSE;
       }
 
@@ -351,7 +356,11 @@ boolean_t pdcp_data_req(
      * to see if RLC succeeded
      */
 
-    LOG_MI("0xB0A3", "%d %d %d %d\n", ctxt_pP->frame, ctxt_pP->subframe, current_sn, pdcp_pdu_size);
+    // MI format: cfg idx, valid pdu, mode, frame, subframe, sequence number length, sequence number, size, bear id, cipheringAlgorithm, timestamp
+    time_t time_now = time(NULL);
+    char* time_str = ctime(&time_now);
+    LOG_MI("0xB0A3", "cfg idx: %d, valid pdu: %d, mode: %d, frame: %d, subframe: %d, sequence number length: %d, sequence number: %d, size: %d, bear id: %d, cipheringAlgorithm: %d, timestamp: %s\n", 
+        srb_flagP ? 33 : 3, 1, pdcp_p->rlc_mode, ctxt_pP->frame, ctxt_pP->subframe, pdcp_p->seq_num_size, current_sn, pdcp_pdu_size, rb_idP, pdcp_p->cipheringAlgorithm, time_str); 
     LOG_DUMPMSG(PDCP,DEBUG_PDCP,(char *)pdcp_pdu_p->data,pdcp_pdu_size,
                 "[MSG] PDCP DL %s PDU on rb_id %d\n",(srb_flagP)? "CONTROL" : "DATA", rb_idP);
 
@@ -1076,8 +1085,12 @@ pdcp_data_ind(
     stop_meas(&UE_pdcp_stats[ctxt_pP->module_id].data_ind);
   }
 
-  LOG_MI("0xB0B3", "%d %d %d %d %d\n",
-    ctxt_pP->frame, ctxt_pP->subframe, sequence_number, sdu_buffer_sizeP - payload_offset, pdcp_p->rlc_mode);
+  // uint8_t valid_pdu = pdcp_is_rx_seq_number_valid(sequence_number, pdcp_p, srb_flagP); // the code for checking rx seq_number is removed above in line 651
+  time_t time_now = time(NULL);
+  char* time_str = ctime(&time_now);
+  // MI format: cfg idx, valid pdu, mode, frame, subframe, sequence number length, sequence number, size, bear id, cipheringAlgorithm, timestamp
+  LOG_MI("0xB0B3", "cfg idx: %d, valid pdu: %d, mode: %d, frame: %d, subframe: %d, sequence number length: %d, sequence number: %d, size: %d, bear id: %d, cipher algorithm: %d, timestamp: %s\n",
+    srb_flagP ? 33 : 3, 1, pdcp_p->rlc_mode, ctxt_pP->frame, ctxt_pP->subframe, pdcp_p->seq_num_size, sequence_number, sdu_buffer_sizeP - payload_offset, rb_idP, pdcp_p->cipheringAlgorithm, time_str);
 
   VCD_SIGNAL_DUMPER_DUMP_FUNCTION_BY_NAME(VCD_SIGNAL_DUMPER_FUNCTIONS_PDCP_DATA_IND,VCD_FUNCTION_OUT);
   return TRUE;
