@@ -7190,6 +7190,12 @@ rrc_eNB_decode_ccch(
     return -1;
   }
 
+  printf("[MI] 0xB0C0 rnti: %x, frame: %d, subframe: %d, message_type: %s, message_byte_in_hex: ", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe, "LTE-RRC_UL_CCCH");
+  for (i = 0; i < 8; i++) {
+    printf("%02x.", ((uint8_t *) & ul_ccch_msg)[i]);
+  }
+  printf("\n[/MI]\n");
+  
   xer_fprint(stdout, &asn_DEF_LTE_UL_CCCH_Message, (void *)ul_ccch_msg);
 
   if (ul_ccch_msg->message.present == LTE_UL_CCCH_MessageType_PR_c1) {
@@ -7751,6 +7757,12 @@ rrc_eNB_decode_dcch(
           dec_rval.consumed);
     return -1;
   }
+
+  printf("[MI] 0xB0C0 rnti: %x, frame: %d, subframe: %d, message_type: %s, message_byte_in_hex: ", ctxt_pP->rnti, ctxt_pP->frame, ctxt_pP->subframe, "LTE-RRC_UL_DCCH");
+  for (i = 0; i < sdu_sizeP; i++) {
+    printf("%02x.", Rx_sdu[i]);
+  }
+  printf("\n[/MI]\n");
 
   ue_context_p = rrc_eNB_get_ue_context(
                    RC.rrc[ctxt_pP->module_id],

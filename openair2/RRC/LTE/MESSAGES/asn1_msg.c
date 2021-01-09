@@ -2445,6 +2445,12 @@ uint8_t do_SIB23(uint8_t Mod_id,
   AssertFatal (enc_rval.encoded > 0, "ASN1 message encoding failed (%s, %lu)!\n",
                enc_rval.failed_type->name, enc_rval.encoded);
 
+  printf("[MI] 0xB0C0 message_type: %s, message_byte_in_hex: ", "LTE-RRC_BCCH_DL_SCH");
+  for (int i = 0; i < (int)sizeof(buffer); i++) {
+    printf("%02x.", buffer[i]);
+  }
+  printf("[/MI]\n");
+
   LOG_D(RRC,"[eNB] SystemInformation Encoded %zd bits (%zd bytes)\n",enc_rval.encoded,(enc_rval.encoded+7)/8);
 
   if (enc_rval.encoded==-1) {
