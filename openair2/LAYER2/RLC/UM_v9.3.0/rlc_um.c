@@ -171,6 +171,22 @@ rlc_um_rx (const protocol_ctxt_t *const ctxt_pP, void *argP, struct mac_data_ind
   int index;
   int                 octet_index;
 
+  tb_p = data_indP.data.head;
+  tb_size_in_bytes   = ((struct mac_tb_ind *) (tb_p->data))->size;
+  rlc_um_get_pdu_infos(ctxt_pP,l_rlc_p,(rlc_um_pdu_sn_10_t *) ((struct mac_tb_ind *) (tb_p->data))->data_ptr, tb_size_in_bytes, &pdu_info, l_rlc_p->rx_sn_length);
+  
+  LOG_MI("0xB092", PROTOCOL_RLC_UM_CTXT_FMT" [um] [rx] fr_bits: %u, fi: %u, e: %u, sn: %u, num_li: %u, hid_sz: %u, pay_sz: %u, hdr_sz: %u\n",
+      PROTOCOL_RLC_UM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+      pdu_info.free_bits,
+      pdu_info.fi,
+      pdu_info.e,
+      pdu_info.sn,
+      pdu_info.num_li,
+      pdu_info.hidden_size,
+      pdu_info.payload_size,
+      pdu_info.header_size
+  );
+
   switch (l_rlc_p->protocol_state) {
     case RLC_NULL_STATE:
       // from 3GPP TS 25.322 V9.2.0 p43
@@ -189,6 +205,19 @@ rlc_um_rx (const protocol_ctxt_t *const ctxt_pP, void *argP, struct mac_data_ind
         while (tb_p != NULL) {
           tb_size_in_bytes   = ((struct mac_tb_ind *) (tb_p->data))->size;
           rlc_um_get_pdu_infos(ctxt_pP,l_rlc_p,(rlc_um_pdu_sn_10_t *) ((struct mac_tb_ind *) (tb_p->data))->data_ptr, tb_size_in_bytes, &pdu_info, l_rlc_p->rx_sn_length);
+          
+          LOG_MI("0xB092", PROTOCOL_RLC_UM_CTXT_FMT" [um] [rx] [1] fr_bits: %u, fi: %u, e: %u, sn: %u, num_li: %u, hid_sz: %u, pay_sz: %u, hdr_sz: %u\n",
+              PROTOCOL_RLC_UM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+              pdu_info.free_bits,
+              pdu_info.fi,
+              pdu_info.e,
+              pdu_info.sn,
+              pdu_info.num_li,
+              pdu_info.hidden_size,
+              pdu_info.payload_size,
+              pdu_info.header_size
+          );
+          
           message_string_size = 0;
           message_string_size += sprintf(&message_string[message_string_size],
                                          MSC_AS_TIME_FMT" "PROTOCOL_RLC_UM_MSC_FMT"DATA SN %u size %u FI %u",
@@ -250,6 +279,18 @@ rlc_um_rx (const protocol_ctxt_t *const ctxt_pP, void *argP, struct mac_data_ind
                                tb_size_in_bytes,
                                &pdu_info,
                                l_rlc_p->rx_sn_length);
+
+          LOG_MI("0xB092", PROTOCOL_RLC_UM_CTXT_FMT" [um] [rx] [2] fr_bits: %u, fi: %u, e: %u, sn: %u, num_li: %u, hid_sz: %u, pay_sz: %u, hdr_sz: %u\n",
+              PROTOCOL_RLC_UM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+              pdu_info.free_bits,
+              pdu_info.fi,
+              pdu_info.e,
+              pdu_info.sn,
+              pdu_info.num_li,
+              pdu_info.hidden_size,
+              pdu_info.payload_size,
+              pdu_info.header_size
+          );
 
           if (MESSAGE_CHART_GENERATOR) {
             message_string_size = 0;
@@ -494,8 +535,20 @@ rlc_um_mac_data_request (const protocol_ctxt_t *const ctxt_pP, void *rlc_pP,cons
         continue;
       }
 
-      if (MESSAGE_CHART_GENERATOR || LOG_DEBUGFLAG(DEBUG_RLC) ) {
+      if (MESSAGE_CHART_GENERATOR || LOG_DEBUGFLAG(DEBUG_RLC) || true) {
         rlc_um_get_pdu_infos(ctxt_pP, l_rlc_p,(rlc_um_pdu_sn_10_t *) ((struct mac_tb_req *) (tb_p->data))->data_ptr, tb_size_in_bytes, &pdu_info, l_rlc_p->rx_sn_length);
+
+        LOG_MI("0xB082", PROTOCOL_RLC_UM_CTXT_FMT" [um] [tx] fr_bits: %u, fi: %u, e: %u, sn: %u, num_li: %u, hid_sz: %u, pay_sz: %u, hdr_sz: %u\n",
+            PROTOCOL_RLC_UM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+            pdu_info.free_bits,
+            pdu_info.fi,
+            pdu_info.e,
+            pdu_info.sn,
+            pdu_info.num_li,
+            pdu_info.hidden_size,
+            pdu_info.payload_size,
+            pdu_info.header_size
+        );
 
         if(MESSAGE_CHART_GENERATOR) {
           message_string_size = 0;

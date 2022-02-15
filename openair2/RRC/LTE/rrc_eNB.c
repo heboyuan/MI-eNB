@@ -29,6 +29,7 @@
  */
 #define RRC_ENB
 #define RRC_ENB_C
+#define RRC_DEFAULT_RAB_IS_AM
 #include <asn_application.h>
 #include <asn_internal.h> /* for _ASN_DEFAULT_STACK_MAX */
 #include <per_encoder.h>

@@ -151,6 +151,15 @@ rlc_um_segment_10 (const protocol_ctxt_t* const ctxt_pP, rlc_um_entity_t *rlc_pP
     while ((sdu_in_buffer) && (continue_fill_pdu_with_sdu > 0)) {
       sdu_mngt_p = ((struct rlc_um_tx_sdu_management *) (sdu_in_buffer->data));
 
+      LOG_D(RLC, PROTOCOL_RLC_UM_CTXT_FMT" [segment] sdu_addr: %x, sdu_remain: %d, sdu_total: %d, pdu_remain: %d, pdu_total: %d\n",
+        PROTOCOL_RLC_UM_CTXT_ARGS(ctxt_pP,rlc_pP),
+        sdu_mngt_p->first_byte,
+        sdu_mngt_p->sdu_remaining_size,
+        sdu_mngt_p->sdu_size,
+        test_pdu_remaining_size,
+        nb_bytes_to_transmit
+      );
+
       if (sdu_mngt_p->sdu_remaining_size > test_pdu_remaining_size) {
         // no LI
         continue_fill_pdu_with_sdu = 0;

@@ -450,6 +450,20 @@ rlc_am_rx (
 ) {
   rlc_am_entity_t *rlc = (rlc_am_entity_t *) arg_pP;
 
+  rlc_am_entity_t *l_rlc_p = rlc;
+
+  rlc_am_control_pdu_info_t control_info = l_rlc_p->control_pdu_info;
+
+  LOG_MI("0xB092", PROTOCOL_RLC_AM_CTXT_FMT" [am] [rx] d/c: %d, cpt: %d, ack_sn: %d, e1: %d, dummy: %d, num_nack: %d",
+    PROTOCOL_RLC_AM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+    control_info.d_c,
+    control_info.cpt,
+    control_info.ack_sn,
+    control_info.e1,
+    control_info.dummy,
+    control_info.num_nack
+  );
+
   switch (rlc->protocol_state) {
     case RLC_NULL_STATE:
       LOG_I(RLC, PROTOCOL_RLC_AM_CTXT_FMT" ERROR MAC_DATA_IND IN RLC_NULL_STATE\n", PROTOCOL_RLC_AM_CTXT_ARGS(ctxt_pP, rlc));
@@ -640,7 +654,7 @@ rlc_am_mac_data_request (
 
   data_req.rlc_info.rlc_protocol_state = l_rlc_p->protocol_state;
 
-  if ( (MESSAGE_CHART_GENERATOR || LOG_DEBUGFLAG(DEBUG_RLC))&& data_req.data.nb_elements > 0) {
+  if ( (MESSAGE_CHART_GENERATOR || LOG_DEBUGFLAG(DEBUG_RLC) || true)&& data_req.data.nb_elements > 0) {
     tb_p = data_req.data.head;
 
     while (tb_p != NULL) {
@@ -649,6 +663,15 @@ rlc_am_mac_data_request (
 
       if ((((struct mac_tb_req *) (tb_p->data))->data_ptr[0] & RLC_DC_MASK) == RLC_DC_DATA_PDU ) {
         if (rlc_am_get_data_pdu_infos(ctxt_pP,l_rlc_p,rlc_am_pdu_sn_10_p, tb_size_in_bytes, &pdu_info) >= 0) {
+          LOG_MI("0xB082", PROTOCOL_RLC_AM_CTXT_FMT" [am] [tx] d/c: %d, rf: %d, p: %d, fi: %d, e: %d, sn: %d",
+            PROTOCOL_RLC_AM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+            pdu_info.d_c,
+            pdu_info.rf,
+            pdu_info.p,
+            pdu_info.fi,
+            pdu_info.e,
+            pdu_info.sn
+          );
           if (MESSAGE_CHART_GENERATOR) {
             message_string_size = 0;
             message_string_size += sprintf(&message_string[message_string_size],
@@ -842,7 +865,7 @@ rlc_am_mac_data_indication (
   (void)index;
   (void)l_rlc_p; /* avoid gcc warning "unused variable" */
 
-  if ( LOG_DEBUGFLAG(DEBUG_RLC) || MESSAGE_CHART_GENERATOR ) {
+  if ( LOG_DEBUGFLAG(DEBUG_RLC) || MESSAGE_CHART_GENERATOR || true ) {
     if (data_indP.data.nb_elements > 0) {
       tb_p = data_indP.data.head;
 
@@ -852,6 +875,15 @@ rlc_am_mac_data_indication (
 
         if ((((struct mac_tb_ind *) (tb_p->data))->data_ptr[0] & RLC_DC_MASK) == RLC_DC_DATA_PDU ) {
           if (rlc_am_get_data_pdu_infos(ctxt_pP,l_rlc_p,rlc_am_pdu_sn_10_p, tb_size_in_bytes, &pdu_info) >= 0) {
+            LOG_MI("0xB092", PROTOCOL_RLC_AM_CTXT_FMT" [am] [tx] d/c: %d, rf: %d, p: %d, fi: %d, e: %d, sn: %d",
+              PROTOCOL_RLC_AM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+              pdu_info.d_c,
+              pdu_info.rf,
+              pdu_info.p,
+              pdu_info.fi,
+              pdu_info.e,
+              pdu_info.sn
+            );
             if (MESSAGE_CHART_GENERATOR) {
               message_string_size = 0;
               message_string_size += sprintf(&message_string[message_string_size],
@@ -1021,6 +1053,15 @@ rlc_am_mac_data_indication (
         tb_size_in_bytes   = ((struct mac_tb_ind *) (tb_p->data))->size;
         if ((((struct mac_tb_ind *) (tb_p->data))->data_ptr[0] & RLC_DC_MASK) == RLC_DC_DATA_PDU ) {
           if (rlc_am_get_data_pdu_infos(ctxt_pP,l_rlc_p,rlc_am_pdu_sn_10_p, tb_size_in_bytes, &pdu_info) >= 0) {
+            LOG_MI("0xB092", PROTOCOL_RLC_AM_CTXT_FMT" [am] [tx] d/c: %d, rf: %d, p: %d, fi: %d, e: %d, sn: %d",
+              PROTOCOL_RLC_AM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+              pdu_info.d_c,
+              pdu_info.rf,
+              pdu_info.p,
+              pdu_info.fi,
+              pdu_info.e,
+              pdu_info.sn
+            );
             LOG_MI("0xB092", "1 %d %d %d %d %d %d\n", ctxt_pP->frame, ctxt_pP->subframe, l_rlc_p->rb_id, tb_size_in_bytes, pdu_info.header_size, pdu_info.payload_size);
           }
         } else {
@@ -1049,6 +1090,18 @@ rlc_am_data_req (
   size_t               message_string_size = 0;
   int                  octet_index, index;
   RLC_AM_MUTEX_LOCK(&l_rlc_p->lock_input_sdus, ctxt_pP, l_rlc_p);
+
+  rlc_am_control_pdu_info_t control_info = l_rlc_p->control_pdu_info;
+
+  LOG_MI("0xB082", PROTOCOL_RLC_AM_CTXT_FMT" [am] [tx] d/c: %d, cpt: %d, ack_sn: %d, e1: %d, dummy: %d, num_nack: %d",
+    PROTOCOL_RLC_AM_CTXT_ARGS(ctxt_pP,l_rlc_p),
+    control_info.d_c,
+    control_info.cpt,
+    control_info.ack_sn,
+    control_info.e1,
+    control_info.dummy,
+    control_info.num_nack
+  );
 
   if ((l_rlc_p->input_sdus[l_rlc_p->next_sdu_index].mem_block == NULL) &&
       (l_rlc_p->input_sdus[l_rlc_p->next_sdu_index].flags.segmented == 0) &&

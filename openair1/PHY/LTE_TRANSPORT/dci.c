@@ -318,6 +318,8 @@ uint8_t generate_dci_top(uint8_t num_pdcch_symbols,
     }
   }
 
+  dump_dci(frame_parms, dci_alloc);
+
   VCD_SIGNAL_DUMPER_DUMP_FUNCTION_BY_NAME(VCD_SIGNAL_DUMPER_FUNCTIONS_GENERATE_DCI0,0);
   // Scrambling
 #ifdef DEBUG_DCI_ENCODING
