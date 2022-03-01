@@ -179,6 +179,8 @@ rx_sdu(const module_id_t enb_mod_idP,
     AssertFatal(UE_scheduling_control->round_UL[CC_idP][harq_pid] < 8, "round >= 8\n");
 
     if (sduP != NULL) {
+      // log control element timing advance command: timing_advance
+      LOG_MI("0xB064", "uplink timing advance command: %d", timing_advance);
       UE_scheduling_control->ul_inactivity_timer = 0;
       UE_scheduling_control->ul_failure_timer = 0;
       UE_scheduling_control->ul_scheduled &= (~(1 << harq_pid));
@@ -399,6 +401,8 @@ rx_sdu(const module_id_t enb_mod_idP,
             UE_template_ptr->phr_info = 40;
           }
 
+          // log control element power headroom report: UE_template_ptr->phr_info
+          LOG_MI("0xB064", "power headroom report: %d", UE_template_ptr->phr_info);
           LOG_D(MAC, "[eNB %d] CC_id %d MAC CE_LCID %d : Received PHR PH = %d (db)\n",
                 enb_mod_idP,
                 CC_idP,
@@ -415,6 +419,8 @@ rx_sdu(const module_id_t enb_mod_idP,
       case CRNTI:
         old_rnti = (((uint16_t) payload_ptr[0]) << 8) + payload_ptr[1];
         old_UE_id = find_UE_id(enb_mod_idP, old_rnti);
+        // log control element c-rnti: old_rnti
+        LOG_MI("0xB064", "c-rnti: %x", old_rnti);
         LOG_D(MAC, "[eNB %d] Frame %d, Subframe %d CC_id %d MAC CE_LCID %d (ce %d/%d): CRNTI %x (UE_id %d) in Msg3\n",
               enb_mod_idP,
               frameP,
@@ -539,6 +545,8 @@ rx_sdu(const module_id_t enb_mod_idP,
       case TRUNCATED_BSR:
       case SHORT_BSR:
         lcgid = (payload_ptr[0] >> 6);
+        // log control element Short&Truncated BSR: lcgid and payload_ptr[0] & 0x3f
+        LOG_MI("0xB064", "short BSR: LCGID = %u bsr = %d", lcgid, payload_ptr[0] & 0x3f);
         LOG_D(MAC, "[eNB %d] CC_id %d MAC CE_LCID %d : Received short BSR LCGID = %u bsr = %d\n",
               enb_mod_idP,
               CC_idP,
@@ -612,6 +620,12 @@ rx_sdu(const module_id_t enb_mod_idP,
             UE_template_ptr->ul_buffer_info[LCGID2] +
             UE_template_ptr->ul_buffer_info[LCGID3];
 
+          // log control element long BSR: UE_template_ptr->ul_buffer_info[LCGID0], UE_template_ptr->ul_buffer_info[LCGID1] ...
+          LOG_MI("0xB064", "long BSR: LCGID0 = %u LCGID1 = %u LCGID2 = %u LCGID3 = %u",
+            UE_template_ptr->ul_buffer_info[LCGID0],
+            UE_template_ptr->ul_buffer_info[LCGID1],
+            UE_template_ptr->ul_buffer_info[LCGID2],
+            UE_template_ptr->ul_buffer_info[LCGID3]);
           LOG_D(MAC, "[eNB %d] CC_id %d MAC CE_LCID %d: Received long BSR. Size is LCGID0 = %u LCGID1 = %u LCGID2 = %u LCGID3 = %u\n",
             enb_mod_idP,
             CC_idP,

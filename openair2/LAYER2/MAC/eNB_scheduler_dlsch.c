@@ -149,6 +149,8 @@ generate_dlsch_header(unsigned char *mac_header,
     last_size = 1;
   }
 
+  // log control element drx command: drx_cmd
+  LOG_MI("0xB063", "drx command %x", drx_cmd);
   if (drx_cmd != 255) {
     if (first_element > 0) {
       mac_header_ptr->E = 1;
@@ -163,6 +165,8 @@ generate_dlsch_header(unsigned char *mac_header,
     last_size = 1;
   }
 
+  // log control element timing advance command: timing_advance_cmd
+  LOG_MI("0xB063", "downlink timing advance command: %d", timing_advance_cmd);
   if (timing_advance_cmd != 31) {
     if (first_element > 0) {
       mac_header_ptr->E = 1;
@@ -205,6 +209,14 @@ generate_dlsch_header(unsigned char *mac_header,
     mac_header_ptr->E = 0;
     mac_header_ptr->LCID = UE_CONT_RES;
     last_size = 1;
+    // log control element contention resolution identity: ue_cont_res_id
+    LOG_MI("0xB063", "contention resolution identity: %x.%x.%x.%x.%x.%x",
+          ue_cont_res_id[0],
+          ue_cont_res_id[1],
+          ue_cont_res_id[2],
+          ue_cont_res_id[3],
+          ue_cont_res_id[4],
+          ue_cont_res_id[5]);
     LOG_T(MAC, "[eNB ][RAPROC] Generate contention resolution msg: %x.%x.%x.%x.%x.%x\n",
           ue_cont_res_id[0],
           ue_cont_res_id[1],
